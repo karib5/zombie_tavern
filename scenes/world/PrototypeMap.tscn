@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/buildings/Tavern.tscn" id="1_tavern"]
+[ext_resource type="PackedScene" path="res://scenes/items/TestInteractable.tscn" id="2_test_interactable"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boundary_h"]
 size = Vector2(1600, 32)
@@ -54,3 +55,6 @@ position = Vector2(100, 400)
 [node name="Entities" type="Node2D" parent="."]
 
 [node name="Interactables" type="Node2D" parent="."]
+
+[node name="TestInteractable" parent="Interactables" instance=ExtResource("2_test_interactable")]
+position = Vector2(340, 780)

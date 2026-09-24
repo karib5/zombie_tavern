@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/world/PrototypeMap.tscn" id="1_map"]
 [ext_resource type="Script" path="res://scripts/world/Main.gd" id="2_main_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/InteractionPrompt.tscn" id="3_interaction_prompt"]
 
 [node name="Main" type="Node"]
 script = ExtResource("2_main_script")
@@ -13,3 +14,5 @@ script = ExtResource("2_main_script")
 [node name="CameraRig" type="Node2D" parent="."]
 
 [node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="InteractionPrompt" parent="UILayer" instance=ExtResource("3_interaction_prompt")]
