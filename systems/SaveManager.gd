@@ -10,7 +10,14 @@ extends Node
 ## Main/PrototypeMap node path - so this works unchanged no matter which
 ## scene/region a saveable object actually lives in.
 
-const SAVE_VERSION := 1
+## v1: flat "world_objects" dict of {save_key: data}.
+## v2: "regions" dict of {region_id: {"objects": {save_key: data}}} -
+## the same per-object data, just grouped by region so a region's save
+## data can eventually be loaded/saved independently of the rest of the
+## world. v1 saves still load (see _regions_data_from_save()); every
+## save written from here on is v2.
+const SAVE_VERSION := 2
+const OLDEST_LOADABLE_VERSION := 1
 const SAVE_DIR := "user://saves"
 const DEFAULT_SLOT := "default"
 
@@ -100,8 +107,9 @@ func load_game(slot: String = DEFAULT_SLOT) -> bool:
 		push_error("SaveManager: save file %s is missing version info" % path)
 		load_failed.emit(slot, "missing_version")
 		return false
-	if int(data["version"]) != SAVE_VERSION:
-		push_error("SaveManager: save file %s is version %s, this build expects version %d" % [path, data["version"], SAVE_VERSION])
+	var file_version := int(data["version"])
+	if file_version < OLDEST_LOADABLE_VERSION or file_version > SAVE_VERSION:
+		push_error("SaveManager: save file %s is version %d, this build supports %d-%d" % [path, file_version, OLDEST_LOADABLE_VERSION, SAVE_VERSION])
 		load_failed.emit(slot, "version_mismatch")
 		return false
 
@@ -133,7 +141,7 @@ func _collect_save_data() -> Dictionary:
 		"version": SAVE_VERSION,
 		"time": TimeManager.get_save_data(),
 		"player": _collect_player_data(),
-		"world_objects": _collect_world_object_data(),
+		"regions": _collect_regions_data(),
 	}
 
 func _collect_player_data() -> Dictionary:
@@ -158,25 +166,51 @@ func _collect_player_data() -> Dictionary:
 ## SearchableContainer, StorageContainer, SurvivorAI) adds itself to the
 ## "saveable" group in its own _ready() and implements
 ## get_save_key()/get_save_data() - discovered here purely by group
-## membership, never by scene path.
-func _collect_world_object_data() -> Dictionary:
-	var result := {}
+## membership, never by scene path. Each object's save key is
+## "<world_region>/<id>" (see ResourceNode.get_save_key() etc.), so the
+## region to file it under is just that key's first path segment - no
+## separate region lookup needed, and this keeps working even for an
+## object whose region isn't currently registered with WorldManager.
+func _collect_regions_data() -> Dictionary:
+	var regions := {}
 	for node in get_tree().get_nodes_in_group("saveable"):
-		if not node.has_method("get_save_data"):
+		if not (node.has_method("get_save_key") and node.has_method("get_save_data")):
 			continue
-		result[node.get_save_key()] = node.get_save_data()
-	return result
+		var key: String = node.get_save_key()
+		var region_id := key.get_slice("/", 0)
+		if not regions.has(region_id):
+			regions[region_id] = {"objects": {}}
+		regions[region_id]["objects"][key] = node.get_save_data()
+	return regions
+
+## v1 saves stored one flat {save_key: data} dict; v2 groups the same
+## per-object data under {region_id: {"objects": {...}}}. Both shapes are
+## flattened back to a single {save_key: data} dict here, so the apply
+## loop below never needs to care which version it came from - the only
+## place version matters is picking which section to read.
+func _flatten_regions_data(data: Dictionary) -> Dictionary:
+	var flat := {}
+	var file_version := int(data.get("version", OLDEST_LOADABLE_VERSION))
+	if file_version <= 1:
+		flat = data.get("world_objects", {}).duplicate()
+	else:
+		var regions: Dictionary = data.get("regions", {})
+		for region_id in regions:
+			var objects: Dictionary = regions[region_id].get("objects", {})
+			for key in objects:
+				flat[key] = objects[key]
+	return flat
 
 func _apply_save_data(data: Dictionary) -> void:
 	TimeManager.apply_save_data(data.get("time", {}))
 
-	var world_objects: Dictionary = data.get("world_objects", {})
+	var flat_objects := _flatten_regions_data(data)
 	for node in get_tree().get_nodes_in_group("saveable"):
-		if not node.has_method("apply_save_data"):
+		if not (node.has_method("get_save_key") and node.has_method("apply_save_data")):
 			continue
 		var key: String = node.get_save_key()
-		if world_objects.has(key):
-			node.apply_save_data(world_objects[key])
+		if flat_objects.has(key):
+			node.apply_save_data(flat_objects[key])
 
 	_apply_player_data(data.get("player", {}))
 

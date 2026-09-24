@@ -2,6 +2,16 @@ extends Node
 
 const PLAYER_SCENE: PackedScene = preload("res://scenes/player/Player.tscn")
 
+## The prototype map's test regions - see WorldManager's "World regions"
+## section and data/regions/*.tres. Registered here (not from
+## PrototypeMap.tscn, which has no script) since Main already owns the
+## rest of this scene's setup wiring.
+const REGIONS: Array[WorldRegionData] = [
+	preload("res://data/regions/CentralRegion.tres"),
+	preload("res://data/regions/ForestRegion.tres"),
+	preload("res://data/regions/MiningRegion.tres"),
+]
+
 @onready var world_root: Node2D = $WorldRoot
 @onready var interaction_prompt: InteractionPrompt = $UILayer/InteractionPrompt
 @onready var inventory_ui: InventoryUI = $UILayer/InventoryUI
@@ -16,8 +26,11 @@ const PLAYER_SCENE: PackedScene = preload("res://scenes/player/Player.tscn")
 @onready var attack_event_ui: AttackEventUI = $UILayer/AttackEventUI
 
 func _ready() -> void:
+	for region in REGIONS:
+		WorldManager.register_region(region)
 	WorldManager.register_current_map(world_root)
 	_spawn_player()
+	WorldManager.force_region_check()
 
 ## Debug save triggers for this phase (no save menu yet) - F5 save, F9
 ## load, F12 new game. SaveManager itself has no idea Main.tscn exists;

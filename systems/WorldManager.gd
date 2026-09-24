@@ -31,3 +31,124 @@ func spawn_entity(scene: PackedScene, spawn_position: Vector2, parent: Node = nu
 
 func despawn_entity(instance: Node) -> void:
 	instance.queue_free()
+
+## ============================================================
+## World regions
+## ============================================================
+## The current PrototypeMap is one scene subdivided into logical regions
+## (see data/regions/*.tres) purely by world-position bounds - this is a
+## test of the architecture, not a rewrite of the map. A future large
+## hand-designed world would register many more WorldRegionData
+## instances the exact same way.
+
+signal region_changed(new_region_id: String, old_region_id: String)
+signal region_activated(region_id: String)
+signal region_deactivated(region_id: String)
+
+const REGION_CHECK_INTERVAL_SECONDS := 0.5
+
+## "" until the first check resolves a region (or if the player is
+## somehow outside every registered region's bounds).
+var current_region_id: String = ""
+
+var _regions: Dictionary = {}  # region_id -> WorldRegionData
+var _active_region_ids: Dictionary = {}  # region_id -> bool
+var _region_snapshots: Dictionary = {}  # region_id -> {save_key: save_data}
+
+var _region_check_timer: Timer
+
+func _ready() -> void:
+	# Throttled polling instead of a per-frame check or a physics Area2D
+	# per region - simplest reliable approach for "which of a handful of
+	# rectangles am I in", and cheap enough that 0.5s latency on the
+	# region_changed signal is a non-issue.
+	_region_check_timer = Timer.new()
+	_region_check_timer.wait_time = REGION_CHECK_INTERVAL_SECONDS
+	_region_check_timer.autostart = true
+	_region_check_timer.timeout.connect(_check_current_region)
+	add_child(_region_check_timer)
+
+func register_region(data: WorldRegionData) -> void:
+	if data == null or data.region_id == "":
+		return
+	_regions[data.region_id] = data
+	if not _active_region_ids.has(data.region_id):
+		_active_region_ids[data.region_id] = true
+
+func get_region(region_id: String) -> WorldRegionData:
+	return _regions.get(region_id)
+
+func get_all_regions() -> Array[WorldRegionData]:
+	var result: Array[WorldRegionData] = []
+	for region_id in _regions:
+		result.append(_regions[region_id])
+	return result
+
+## Linear scan over registered regions - fine for a handful of regions,
+## and only ever called from the throttled timer or on demand, never
+## per-frame. A future world with many regions would swap this for a
+## spatial lookup (grid/quadtree) without changing any call site.
+func get_region_at_position(world_position: Vector2) -> WorldRegionData:
+	for region_id in _regions:
+		var region: WorldRegionData = _regions[region_id]
+		if region.contains_point(world_position):
+			return region
+	return null
+
+func is_region_active(region_id: String) -> bool:
+	return _active_region_ids.get(region_id, true)
+
+## Exposed for tests/manual triggers that don't want to wait up to
+## REGION_CHECK_INTERVAL_SECONDS for the timer.
+func force_region_check() -> void:
+	_check_current_region()
+
+func _check_current_region() -> void:
+	var player: Node2D = GameManager.player
+	if player == null:
+		return
+	var region := get_region_at_position(player.global_position)
+	var new_id := region.region_id if region != null else ""
+	if new_id != current_region_id:
+		var old_id := current_region_id
+		current_region_id = new_id
+		region_changed.emit(new_id, old_id)
+
+## ============================================================
+## Region activation/deactivation
+## ============================================================
+## Deliberately NOT real streaming (no nodes are added/removed from the
+## tree) - Phase 19 only establishes the hook. Deactivating a region
+## snapshots every "saveable" object whose save key belongs to it (via
+## the exact get_save_data()/apply_save_data() contract SaveManager
+## already uses) and marks the region inactive; activating it restores
+## that snapshot. This is intentionally a clean seam a real streaming/
+## simulation-LOD system can be swapped in behind later, e.g. by also
+## despawning/respawning nodes or throttling AI update rates per region.
+
+func deactivate_region(region_id: String) -> void:
+	if not is_region_active(region_id):
+		return
+	var snapshot := {}
+	for node in get_tree().get_nodes_in_group("saveable"):
+		if not (node.has_method("get_save_key") and node.has_method("get_save_data")):
+			continue
+		var key: String = node.get_save_key()
+		if key.begins_with(region_id + "/"):
+			snapshot[key] = node.get_save_data()
+	_region_snapshots[region_id] = snapshot
+	_active_region_ids[region_id] = false
+	region_deactivated.emit(region_id)
+
+func activate_region(region_id: String) -> void:
+	if is_region_active(region_id):
+		return
+	var snapshot: Dictionary = _region_snapshots.get(region_id, {})
+	for node in get_tree().get_nodes_in_group("saveable"):
+		if not (node.has_method("get_save_key") and node.has_method("apply_save_data")):
+			continue
+		var key: String = node.get_save_key()
+		if snapshot.has(key):
+			node.apply_save_data(snapshot[key])
+	_active_region_ids[region_id] = true
+	region_activated.emit(region_id)
