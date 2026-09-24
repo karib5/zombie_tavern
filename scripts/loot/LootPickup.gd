@@ -8,6 +8,9 @@ extends Interactable
 func _ready() -> void:
 	prompt_text = "Collect Loot"
 
+func is_available() -> bool:
+	return not loot_table.is_empty()
+
 func interact(player: Node) -> void:
 	var inventory := player.get_node("Inventory") as Inventory
 	if inventory == null:

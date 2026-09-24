@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/buildings/Tavern.tscn" id="1_tavern"]
 [ext_resource type="PackedScene" path="res://scenes/items/TestInteractable.tscn" id="2_test_interactable"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/gathering/PlantResourceNode.tscn" id="5_plant_resource_node"]
 [ext_resource type="PackedScene" path="res://scenes/zombies/Zombie.tscn" id="6_zombie"]
 [ext_resource type="PackedScene" path="res://scenes/animals/Rabbit.tscn" id="7_rabbit"]
+[ext_resource type="PackedScene" path="res://scenes/cooking/CookingStation.tscn" id="8_cooking_station"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boundary_h"]
 size = Vector2(1600, 32)
@@ -105,3 +106,6 @@ position = Vector2(500, 950)
 
 [node name="Plant2" parent="Interactables" instance=ExtResource("5_plant_resource_node")]
 position = Vector2(650, 1000)
+
+[node name="CookingStation" parent="Interactables" instance=ExtResource("8_cooking_station")]
+position = Vector2(200, 500)

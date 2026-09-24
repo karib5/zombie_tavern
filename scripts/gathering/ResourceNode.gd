@@ -34,6 +34,9 @@ func _ready() -> void:
 	_respawn_timer.timeout.connect(_on_respawn_timer_timeout)
 	_update_visual_state()
 
+func is_available() -> bool:
+	return not is_depleted
+
 func interact(player: Node) -> void:
 	if is_depleted:
 		return
