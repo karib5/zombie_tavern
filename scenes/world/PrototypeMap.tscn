@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/buildings/Tavern.tscn" id="1_tavern"]
 [ext_resource type="PackedScene" path="res://scenes/items/TestInteractable.tscn" id="2_test_interactable"]
@@ -13,6 +13,8 @@
 [ext_resource type="PackedScene" path="res://scenes/tavern/TavernTable.tscn" id="11_tavern_table"]
 [ext_resource type="PackedScene" path="res://scenes/survivors/Survivor.tscn" id="12_survivor"]
 [ext_resource type="Resource" path="res://data/survivors/Civilian.tres" id="13_civilian_data"]
+[ext_resource type="Script" path="res://scripts/events/TavernAttackEvent.gd" id="14_tavern_attack_event_script"]
+[ext_resource type="PackedScene" path="res://scenes/events/AttackEventTrigger.tscn" id="15_attack_event_trigger"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boundary_h"]
 size = Vector2(1600, 32)
@@ -99,10 +101,34 @@ position = Vector2(250, 650)
 position = Vector2(160, 560)
 survivor_data = ExtResource("13_civilian_data")
 
+[node name="AttackSpawnPoints" type="Node2D" parent="."]
+
+[node name="ZombieAttack1SpawnPoint" type="Marker2D" parent="AttackSpawnPoints"]
+position = Vector2(340, 250)
+
+[node name="ZombieAttack2SpawnPoint" type="Marker2D" parent="AttackSpawnPoints"]
+position = Vector2(750, 560)
+
+[node name="ZombieAttack3SpawnPoint" type="Marker2D" parent="AttackSpawnPoints"]
+position = Vector2(30, 560)
+
+[node name="ZombieAttack4SpawnPoint" type="Marker2D" parent="AttackSpawnPoints"]
+position = Vector2(450, 900)
+
+[node name="TavernAttackEvent" type="Node" parent="."]
+script = ExtResource("14_tavern_attack_event_script")
+
+[node name="WarningTimer" type="Timer" parent="TavernAttackEvent"]
+
+[node name="CompleteTimer" type="Timer" parent="TavernAttackEvent"]
+
 [node name="Interactables" type="Node2D" parent="."]
 
 [node name="TestInteractable" parent="Interactables" instance=ExtResource("2_test_interactable")]
 position = Vector2(340, 780)
+
+[node name="AttackEventTrigger" parent="Interactables" instance=ExtResource("15_attack_event_trigger")]
+position = Vector2(380, 560)
 
 [node name="Tree1" parent="Interactables" instance=ExtResource("3_tree_resource_node")]
 position = Vector2(900, 300)
