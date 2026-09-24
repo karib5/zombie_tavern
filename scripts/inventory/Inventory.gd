@@ -93,3 +93,39 @@ func get_total_weight() -> float:
 
 func is_overweight() -> bool:
 	return get_total_weight() > max_carry_weight
+
+## Plain-data snapshot (item resource path, not the Resource itself) so
+## SaveManager can hand this straight to JSON.stringify(). Reused for both
+## the player's inventory and any StorageContainer's - there is only one
+## Inventory implementation, and only one serialization for it.
+func to_save_data() -> Array:
+	var result := []
+	for slot in slots:
+		if slot == null:
+			result.append(null)
+			continue
+		result.append({
+			"item_path": slot.item.resource_path,
+			"quantity": slot.quantity,
+			"tool_durability": slot.tool_durability,
+			"acquired_at_minutes": slot.acquired_at_minutes,
+		})
+	return result
+
+func apply_save_data(data: Array) -> void:
+	slots.resize(slot_capacity)
+	for i in slots.size():
+		slots[i] = null
+	for i in mini(data.size(), slots.size()):
+		var entry = data[i]
+		if entry == null:
+			continue
+		var item_path: String = entry.get("item_path", "")
+		if item_path == "" or not ResourceLoader.exists(item_path):
+			continue
+		var item: ItemData = load(item_path)
+		var slot := InventorySlot.new(item, entry.get("quantity", 1))
+		slot.tool_durability = entry.get("tool_durability", -1.0)
+		slot.acquired_at_minutes = entry.get("acquired_at_minutes", 0.0)
+		slots[i] = slot
+	inventory_changed.emit()

@@ -41,6 +41,14 @@ func _on_minute_changed(_day: int, _hour: int, _minute: int) -> void:
 	if (hunger <= 0.0 or thirst <= 0.0) and not _health.is_dead:
 		_health.apply_damage(starving_damage_per_minute)
 
+## Restores a specific saved hunger/thirst pair - used by SaveManager on
+## load, bypassing consume()'s is_consumable gate.
+func load_state(p_hunger: float, p_thirst: float) -> void:
+	hunger = clampf(p_hunger, 0.0, max_hunger)
+	thirst = clampf(p_thirst, 0.0, max_thirst)
+	hunger_changed.emit(hunger, max_hunger)
+	thirst_changed.emit(thirst, max_thirst)
+
 ## Returns false (no-op) if the item can't actually be consumed.
 func consume(item: ItemData) -> bool:
 	if item == null or not item.is_consumable:

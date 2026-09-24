@@ -14,7 +14,7 @@ anchor_right = 1.0
 offset_left = -170.0
 offset_top = 16.0
 offset_right = -16.0
-offset_bottom = 96.0
+offset_bottom = 116.0
 
 [node name="HungerLabel" type="Label" parent="Panel"]
 offset_left = 8.0
@@ -36,3 +36,12 @@ offset_top = 44.0
 offset_right = -8.0
 offset_bottom = 62.0
 text = "Day 1  08:00"
+
+[node name="SaveHintLabel" type="Label" parent="Panel"]
+offset_left = 8.0
+offset_top = 68.0
+offset_right = -8.0
+offset_bottom = 98.0
+theme_override_font_sizes/font_size = 12
+text = "F5 Save  F9 Load
+F12 New Game"

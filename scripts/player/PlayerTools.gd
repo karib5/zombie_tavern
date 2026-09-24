@@ -84,6 +84,19 @@ func _on_inventory_changed() -> void:
 	elif equipped_slot == null and not tool_slots.is_empty():
 		_set_equipped(tool_slots[0])
 
+## Used by SaveManager to restore the equipped tool after
+## Inventory.apply_save_data() rebuilds `slots` with fresh InventorySlot
+## instances (equipped_slot can't just be serialized directly - it's an
+## object reference, not data).
+func get_equipped_slot_index() -> int:
+	return _inventory.slots.find(equipped_slot)
+
+func equip_slot_index(index: int) -> void:
+	if index >= 0 and index < _inventory.slots.size() and _inventory.slots[index] != null:
+		_set_equipped(_inventory.slots[index])
+	else:
+		_set_equipped(null)
+
 func _tool_slots() -> Array[InventorySlot]:
 	var result: Array[InventorySlot] = []
 	for slot in _inventory.slots:

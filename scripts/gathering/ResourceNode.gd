@@ -30,21 +30,63 @@ extends Interactable
 ## SearchableContainer staying empty once looted.
 @export var respawns: bool = true
 
+## Stable save identity: world_region + (save_id or node name). The node
+## name is used as the fallback ID precisely because it's already unique
+## per-parent and author-assigned (e.g. "Tree1", "OreRock2") - not a
+## memory address, not scene-tree position.
+@export var save_id: String = ""
+@export var world_region: String = "prototype"
+
 ## Current remaining amount and depletion state. Changed only through
 ## gathering and respawning below.
 var current_amount: int
 var is_depleted: bool = false
+
+## Real-world timestamp (Time.get_unix_time_from_system()) recorded when
+## this node depleted - used only to resume the respawn countdown
+## correctly across a save/load that spans the game being fully closed,
+## when a Timer's own in-memory time_left can't survive. The live,
+## running-game respawn behavior (the Timer itself) is unchanged.
+var _depleted_at_unix: float = 0.0
 
 @onready var _visual: Node2D = $Visual
 @onready var _collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var _respawn_timer: Timer = $RespawnTimer
 
 func _ready() -> void:
+	add_to_group("saveable")
 	current_amount = max_amount
 	prompt_text = "Gather %s" % resource_name
 	_respawn_timer.one_shot = true
 	_respawn_timer.timeout.connect(_on_respawn_timer_timeout)
 	_update_visual_state()
+
+func get_save_key() -> String:
+	return "%s/%s" % [world_region, save_id if save_id != "" else name]
+
+func get_save_data() -> Dictionary:
+	return {
+		"current_amount": current_amount,
+		"is_depleted": is_depleted,
+		"depleted_at_unix": _depleted_at_unix,
+	}
+
+func apply_save_data(data: Dictionary) -> void:
+	current_amount = data.get("current_amount", max_amount)
+	is_depleted = data.get("is_depleted", false)
+	_collision_shape.disabled = is_depleted
+	_update_visual_state()
+	_respawn_timer.stop()
+
+	if not is_depleted or not respawns:
+		return
+
+	_depleted_at_unix = data.get("depleted_at_unix", Time.get_unix_time_from_system())
+	var elapsed := Time.get_unix_time_from_system() - _depleted_at_unix
+	if elapsed >= respawn_time_seconds:
+		_on_respawn_timer_timeout()
+	else:
+		_respawn_timer.start(respawn_time_seconds - elapsed)
 
 func is_available() -> bool:
 	return not is_depleted
@@ -102,6 +144,7 @@ func _effective_amount_per_gather(player: Node) -> int:
 func _deplete() -> void:
 	current_amount = 0
 	is_depleted = true
+	_depleted_at_unix = Time.get_unix_time_from_system()
 	_collision_shape.disabled = true
 	_update_visual_state()
 	if respawns:

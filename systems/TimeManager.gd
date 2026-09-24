@@ -48,3 +48,17 @@ func get_total_minutes() -> int:
 
 func get_time_string() -> String:
 	return "Day %d  %02d:%02d" % [day, hour, minute]
+
+func get_save_data() -> Dictionary:
+	return {"day": day, "hour": hour, "minute": minute}
+
+## Restores the clock exactly where the save left off - does not reset to
+## Day 1, and never creates a second clock (TimeManager itself stays the
+## sole authority on game time).
+func apply_save_data(data: Dictionary) -> void:
+	day = data.get("day", 1)
+	hour = data.get("hour", 8)
+	minute = data.get("minute", 0)
+	_minute_accumulator = 0.0
+	is_night = hour < 6 or hour >= 20
+	minute_changed.emit(day, hour, minute)

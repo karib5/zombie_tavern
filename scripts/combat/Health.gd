@@ -29,3 +29,13 @@ func reset() -> void:
 	current_health = max_health
 	is_dead = false
 	health_changed.emit(current_health, max_health)
+
+## Restores a specific saved health value without going through
+## apply_damage()/reset() - used by SaveManager on load. Deliberately does
+## not emit `died`, even if dead=true, so loading doesn't re-trigger a
+## fresh death/respawn sequence; callers that need that (SurvivorAI) call
+## their own death handling explicitly afterward.
+func load_state(current: float, dead: bool) -> void:
+	current_health = current
+	is_dead = dead
+	health_changed.emit(current_health, max_health)

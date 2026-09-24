@@ -13,10 +13,20 @@ enum State { UNTILLED, EMPTY, GROWING, MATURE }
 ## ready-to-plant plots are unaffected.
 @export var requires_hoe_to_prepare: bool = false
 
+@export var save_id: String = ""
+@export var world_region: String = "prototype"
+
 const LOOT_PICKUP_SCENE: PackedScene = preload("res://scenes/loot/LootPickup.tscn")
 
 var state: State = State.EMPTY
 var planted_crop: CropData = null
+
+## Real-world timestamp (Time.get_unix_time_from_system()) recorded when
+## planting started - lets growth resume correctly across a save/load
+## that spans the game being fully closed (the 3 growth Timers' in-memory
+## time_left can't survive that; growth_duration_seconds itself, and the
+## live in-session Timer behavior, are unchanged).
+var _planted_at_unix: float = 0.0
 
 @onready var _crop_visual: Polygon2D = $CropVisual
 @onready var _stage1_timer: Timer = $Stage1Timer
@@ -24,6 +34,7 @@ var planted_crop: CropData = null
 @onready var _mature_timer: Timer = $MatureTimer
 
 func _ready() -> void:
+	add_to_group("saveable")
 	_stage1_timer.one_shot = true
 	_stage2_timer.one_shot = true
 	_mature_timer.one_shot = true
@@ -32,6 +43,71 @@ func _ready() -> void:
 	_mature_timer.timeout.connect(_on_mature_timeout)
 	state = State.UNTILLED if requires_hoe_to_prepare else State.EMPTY
 	_update_state_visuals()
+
+func get_save_key() -> String:
+	return "%s/%s" % [world_region, save_id if save_id != "" else name]
+
+func get_save_data() -> Dictionary:
+	var data := {"state": state}
+	if state == State.GROWING or state == State.MATURE:
+		data["planted_crop_path"] = planted_crop.resource_path if planted_crop else ""
+		data["planted_at_unix"] = _planted_at_unix
+	return data
+
+func apply_save_data(data: Dictionary) -> void:
+	_stage1_timer.stop()
+	_stage2_timer.stop()
+	_mature_timer.stop()
+
+	var saved_state: int = data.get("state", State.EMPTY)
+	if saved_state == State.GROWING:
+		_apply_growing_state(data)
+	elif saved_state == State.MATURE:
+		var crop_path: String = data.get("planted_crop_path", "")
+		planted_crop = load(crop_path) if crop_path != "" and ResourceLoader.exists(crop_path) else null
+		state = State.MATURE
+		_update_state_visuals()
+	elif saved_state == State.UNTILLED:
+		state = State.UNTILLED
+		planted_crop = null
+		_update_state_visuals()
+	else:
+		_reset_to_empty()
+
+## Recomputes which growth stage the crop should actually be in from
+## elapsed real time (planted_at_unix -> now), rather than trusting
+## whichever Timer happened to be running - that's what lets a crop
+## finish growing even if the game was closed the whole time.
+func _apply_growing_state(data: Dictionary) -> void:
+	var crop_path: String = data.get("planted_crop_path", "")
+	var crop: CropData = load(crop_path) if crop_path != "" and ResourceLoader.exists(crop_path) else null
+	if crop == null:
+		_reset_to_empty()
+		return
+
+	planted_crop = crop
+	_planted_at_unix = data.get("planted_at_unix", Time.get_unix_time_from_system())
+	var elapsed := Time.get_unix_time_from_system() - _planted_at_unix
+
+	if elapsed >= crop.growth_duration_seconds:
+		state = State.MATURE
+		_update_state_visuals()
+		return
+
+	state = State.GROWING
+	_crop_visual.visible = true
+	_crop_visual.color = Color(0.35, 0.55, 0.25, 1)
+	prompt_text = "Growing..."
+	if elapsed >= crop.growth_duration_seconds * 2.0 / 3.0:
+		_crop_visual.scale = Vector2(0.85, 0.85)
+	elif elapsed >= crop.growth_duration_seconds / 3.0:
+		_crop_visual.scale = Vector2(0.6, 0.6)
+	else:
+		_crop_visual.scale = Vector2(0.3, 0.3)
+
+	_stage1_timer.start(maxf(crop.growth_duration_seconds / 3.0 - elapsed, 0.01))
+	_stage2_timer.start(maxf(crop.growth_duration_seconds * 2.0 / 3.0 - elapsed, 0.02))
+	_mature_timer.start(crop.growth_duration_seconds - elapsed)
 
 func interact(player: Node) -> void:
 	match state:
@@ -70,6 +146,7 @@ func _try_plant(player: Node) -> void:
 
 	planted_crop = crop
 	state = State.GROWING
+	_planted_at_unix = Time.get_unix_time_from_system()
 
 	# Three fixed timers (1/3, 2/3, full duration) rather than per-frame
 	# polling - each fires once, so an idle/growing plot costs nothing

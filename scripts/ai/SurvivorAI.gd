@@ -20,6 +20,9 @@ enum State { IDLE, WANDER, FLEE, EAT, GUARD, GUARD_ATTACK, DEAD }
 ## How close (pixels) the survivor must be to a table before eating starts.
 @export var eating_range: float = 30.0
 
+@export var save_id: String = ""
+@export var world_region: String = "prototype"
+
 var state: State = State.IDLE
 
 ## Current hunger, 0..max_hunger. Decays every physics frame (a plain
@@ -77,6 +80,7 @@ var _target_table: TavernTable = null
 var _pending_hunger_restore: float = 0.0
 
 func _ready() -> void:
+	add_to_group("saveable")
 	wander_center = global_position
 	guard_position = global_position
 	_wander_target = global_position
@@ -400,6 +404,42 @@ func _pick_idle_or_wander() -> void:
 		var offset := Vector2(randf_range(-_wander_radius, _wander_radius), randf_range(-_wander_radius, _wander_radius))
 		_wander_target = wander_center + offset
 		_behavior_timer.start(_wander_duration)
+
+func get_save_key() -> String:
+	return "%s/%s" % [world_region, save_id if save_id != "" else name]
+
+## Deliberately minimal, per the "persistent world objects, not full AI
+## state" distinction: position/health/hunger/alive-ness is enough to
+## reconstruct a believable survivor on load. Internal state like the
+## current wander target or which table it's walking to is left to
+## re-resolve naturally on the next decision tick.
+func get_save_data() -> Dictionary:
+	return {
+		"position": {"x": global_position.x, "y": global_position.y},
+		"health": _health.current_health,
+		"is_dead": _health.is_dead,
+		"hunger": hunger,
+	}
+
+func apply_save_data(data: Dictionary) -> void:
+	if state == State.DEAD:
+		return  # a survivor that died again since saving stays dead
+
+	var pos: Dictionary = data.get("position", {})
+	if pos.has("x"):
+		global_position = Vector2(pos.get("x", global_position.x), pos.get("y", global_position.y))
+		wander_center = global_position
+		guard_position = global_position
+		_wander_target = global_position
+
+	hunger = clampf(data.get("hunger", hunger), 0.0, _max_hunger)
+	_update_hunger_label()
+
+	var was_dead := _health.is_dead
+	_health.load_state(data.get("health", _health.current_health), false)
+
+	if data.get("is_dead", false) and not was_dead:
+		_on_died()
 
 func _on_died() -> void:
 	state = State.DEAD

@@ -8,12 +8,43 @@ extends Interactable
 @export var container_name: String = "Container"
 @export var loot_table: Array[LootEntry] = []
 
+@export var save_id: String = ""
+@export var world_region: String = "prototype"
+
 signal opened(container: SearchableContainer)
 
 var is_searched: bool = false
 
 func _ready() -> void:
 	add_to_group("searchable_containers")
+	add_to_group("saveable")
+	_update_prompt()
+
+func get_save_key() -> String:
+	return "%s/%s" % [world_region, save_id if save_id != "" else name]
+
+## Saves the exact remaining loot table, not just is_searched - so a
+## partially-searched container (some entries taken, some not) resumes
+## exactly where it was, and an emptied one stays empty forever.
+func get_save_data() -> Dictionary:
+	var entries := []
+	for entry in loot_table:
+		if entry == null or entry.item == null:
+			continue
+		entries.append({"item_path": entry.item.resource_path, "quantity": entry.quantity})
+	return {"is_searched": is_searched, "loot_table": entries}
+
+func apply_save_data(data: Dictionary) -> void:
+	is_searched = data.get("is_searched", false)
+	loot_table.clear()
+	for raw_entry in data.get("loot_table", []):
+		var item_path: String = raw_entry.get("item_path", "")
+		if item_path == "" or not ResourceLoader.exists(item_path):
+			continue
+		var entry := LootEntry.new()
+		entry.item = load(item_path)
+		entry.quantity = raw_entry.get("quantity", 1)
+		loot_table.append(entry)
 	_update_prompt()
 
 func is_available() -> bool:

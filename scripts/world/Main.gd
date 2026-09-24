@@ -19,6 +19,20 @@ func _ready() -> void:
 	WorldManager.register_current_map(world_root)
 	_spawn_player()
 
+## Debug save triggers for this phase (no save menu yet) - F5 save, F9
+## load, F12 new game. SaveManager itself has no idea Main.tscn exists;
+## this is just where the keybinding happens to live.
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("save_game"):
+		SaveManager.save_game()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("load_game"):
+		SaveManager.load_game()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("new_game"):
+		SaveManager.new_game()
+		get_viewport().set_input_as_handled()
+
 func _spawn_player() -> void:
 	var spawn_point := WorldManager.get_spawn_point("PlayerSpawnPoint")
 	var spawn_position := spawn_point.global_position if spawn_point else Vector2.ZERO
