@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ToolData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/ToolData.gd" id="1_tool_data_script"]
+
+[resource]
+script = ExtResource("1_tool_data_script")
+item_id = "pickaxe"
+display_name = "Pickaxe"
+description = "Needed to mine stone and ore from rocks."
+category = 2
+max_stack_size = 1
+tool_type = 2
+effectiveness = 1.0
+interaction_range = 48.0
+use_cooldown_seconds = 0.3
+weight = 3.5

@@ -9,4 +9,7 @@ display_name = "Raw Rabbit Meat"
 description = "Freshly hunted rabbit meat. Should be cooked before eating."
 category = 1
 max_stack_size = 10
+is_consumable = true
 hunger_restore = 15.0
+weight = 1.0
+spoil_minutes = 720.0

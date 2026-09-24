@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/loot/StorageContainer.gd" id="1_storage_container_script"]
+[ext_resource type="Script" path="res://scripts/inventory/Inventory.gd" id="2_inventory_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_chest"]
+size = Vector2(34, 28)
+
+[node name="WoodenChest" type="Area2D"]
+collision_layer = 32
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_storage_container_script")
+container_name = "Wooden Chest"
+
+[node name="Storage" type="Node" parent="."]
+script = ExtResource("2_inventory_script")
+slot_capacity = 12
+
+[node name="Visual" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-17, -14, 17, -14, 17, 14, -17, 14)
+color = Color(0.38, 0.27, 0.15, 1)
+
+[node name="Lid" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-17, -14, 17, -14, 17, -9, -17, -9)
+color = Color(0.48, 0.34, 0.18, 1)
+
+[node name="Band" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-3, -14, 3, -14, 3, 14, -3, 14)
+color = Color(0.2, 0.16, 0.1, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_chest")

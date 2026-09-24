@@ -29,6 +29,11 @@ enum State { WANDER, FLEE, DEAD }
 @export var meat_item: ItemData
 @export var meat_quantity: int = 2
 
+## Extra carcass loot beyond the primary meat (e.g. Bone) - a generic hook
+## so different animals can offer different byproducts without changing
+## this script, same idea as LootPickup's multi-entry loot_table.
+@export var bonus_loot: Array[LootEntry] = []
+
 const CARCASS_SCENE: PackedScene = preload("res://scenes/loot/Carcass.tscn")
 
 var state: State = State.WANDER
@@ -117,17 +122,23 @@ func _on_died() -> void:
 	_spawn_carcass()
 
 func _spawn_carcass() -> void:
-	if meat_item == null or meat_quantity <= 0:
+	var entries: Array[LootEntry] = []
+	if meat_item != null and meat_quantity > 0:
+		var entry := LootEntry.new()
+		entry.item = meat_item
+		entry.quantity = meat_quantity
+		entries.append(entry)
+	for bonus in bonus_loot:
+		if bonus != null and bonus.item != null and bonus.quantity > 0:
+			entries.append(bonus)
+	if entries.is_empty():
 		return
-	var entry := LootEntry.new()
-	entry.item = meat_item
-	entry.quantity = meat_quantity
 	# Deferred: adding a new physics-enabled node to the tree while still
 	# inside a physics query-flush (the same context _on_died() can be
 	# called from) is rejected by the physics server, same as the
 	# collision shape changes above.
-	call_deferred("_do_spawn_carcass", entry)
+	call_deferred("_do_spawn_carcass", entries)
 
-func _do_spawn_carcass(entry: LootEntry) -> void:
+func _do_spawn_carcass(entries: Array[LootEntry]) -> void:
 	var carcass := WorldManager.spawn_entity(CARCASS_SCENE, global_position) as Carcass
-	carcass.setup(animal_name, [entry])
+	carcass.setup(animal_name, entries)

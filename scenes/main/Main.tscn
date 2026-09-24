@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/world/PrototypeMap.tscn" id="1_map"]
 [ext_resource type="Script" path="res://scripts/world/Main.gd" id="2_main_script"]
@@ -7,6 +7,13 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/HealthUI.tscn" id="5_health_ui"]
 [ext_resource type="PackedScene" path="res://scenes/ui/CookingUI.tscn" id="6_cooking_ui"]
 [ext_resource type="PackedScene" path="res://scenes/ui/AttackEventUI.tscn" id="7_attack_event_ui"]
+[ext_resource type="PackedScene" path="res://scenes/ui/CraftingUI.tscn" id="8_crafting_ui"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ToolUI.tscn" id="9_tool_ui"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ProcessingUI.tscn" id="10_processing_ui"]
+[ext_resource type="PackedScene" path="res://scenes/ui/SearchUI.tscn" id="11_search_ui"]
+[ext_resource type="PackedScene" path="res://scenes/ui/StorageUI.tscn" id="12_storage_ui"]
+[ext_resource type="PackedScene" path="res://scenes/ui/SurvivalHUD.tscn" id="13_survival_hud"]
+[ext_resource type="Script" path="res://scripts/world/DayNightVisual.gd" id="14_day_night_visual_script"]
 
 [node name="Main" type="Node"]
 script = ExtResource("2_main_script")
@@ -14,6 +21,9 @@ script = ExtResource("2_main_script")
 [node name="WorldRoot" type="Node2D" parent="."]
 
 [node name="PrototypeMap" parent="WorldRoot" instance=ExtResource("1_map")]
+
+[node name="DayNightVisual" type="CanvasModulate" parent="WorldRoot"]
+script = ExtResource("14_day_night_visual_script")
 
 [node name="CameraRig" type="Node2D" parent="."]
 
@@ -26,5 +36,17 @@ script = ExtResource("2_main_script")
 [node name="HealthUI" parent="UILayer" instance=ExtResource("5_health_ui")]
 
 [node name="CookingUI" parent="UILayer" instance=ExtResource("6_cooking_ui")]
+
+[node name="CraftingUI" parent="UILayer" instance=ExtResource("8_crafting_ui")]
+
+[node name="ProcessingUI" parent="UILayer" instance=ExtResource("10_processing_ui")]
+
+[node name="SearchUI" parent="UILayer" instance=ExtResource("11_search_ui")]
+
+[node name="StorageUI" parent="UILayer" instance=ExtResource("12_storage_ui")]
+
+[node name="ToolUI" parent="UILayer" instance=ExtResource("9_tool_ui")]
+
+[node name="SurvivalHUD" parent="UILayer" instance=ExtResource("13_survival_hud")]
 
 [node name="AttackEventUI" parent="UILayer" instance=ExtResource("7_attack_event_ui")]

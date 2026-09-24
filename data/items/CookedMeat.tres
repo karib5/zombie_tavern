@@ -9,4 +9,7 @@ display_name = "Cooked Meat"
 description = "Meat cooked over a fire. Restores hunger."
 category = 1
 max_stack_size = 10
+is_consumable = true
 hunger_restore = 35.0
+weight = 1.0
+spoil_minutes = 1440.0

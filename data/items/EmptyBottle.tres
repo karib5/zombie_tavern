@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/ItemData.gd" id="1_item_data_script"]
+
+[resource]
+script = ExtResource("1_item_data_script")
+item_id = "empty_bottle"
+display_name = "Empty Bottle"
+description = "An empty bottle. Use it at a water source to collect water."
+category = 0
+max_stack_size = 10
+weight = 0.2

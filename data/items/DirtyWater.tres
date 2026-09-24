@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/ItemData.gd" id="1_item_data_script"]
+
+[resource]
+script = ExtResource("1_item_data_script")
+item_id = "dirty_water"
+display_name = "Dirty Water"
+description = "Water collected from the pond. Not safe to drink - boil it at a Cooking Station first."
+category = 1
+max_stack_size = 10
+is_consumable = false
+weight = 1.0

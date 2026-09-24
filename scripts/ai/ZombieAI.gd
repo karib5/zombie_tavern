@@ -19,6 +19,11 @@ enum State { IDLE, CHASE, ATTACK, DEAD }
 @export var loot_item: ItemData
 @export var loot_quantity: int = 2
 
+## Extra loot beyond the primary item (e.g. Bone) - same generic hook as
+## AnimalAI.bonus_loot, reusing LootEntry rather than a second dedicated
+## item/quantity pair per extra drop.
+@export var bonus_loot: Array[LootEntry] = []
+
 const LOOT_PICKUP_SCENE: PackedScene = preload("res://scenes/loot/LootPickup.tscn")
 
 var state: State = State.IDLE
@@ -127,17 +132,23 @@ func _on_died() -> void:
 	_drop_loot()
 
 func _drop_loot() -> void:
-	if loot_item == null or loot_quantity <= 0:
+	var entries: Array[LootEntry] = []
+	if loot_item != null and loot_quantity > 0:
+		var entry := LootEntry.new()
+		entry.item = loot_item
+		entry.quantity = loot_quantity
+		entries.append(entry)
+	for bonus in bonus_loot:
+		if bonus != null and bonus.item != null and bonus.quantity > 0:
+			entries.append(bonus)
+	if entries.is_empty():
 		return
-	var entry := LootEntry.new()
-	entry.item = loot_item
-	entry.quantity = loot_quantity
 	# Deferred: adding a new physics-enabled node to the tree while still
 	# inside a physics query-flush (death can be triggered synchronously
 	# from a Hitbox's area_entered) is rejected by the physics server,
 	# same as the collision shape changes above.
-	call_deferred("_do_drop_loot", entry)
+	call_deferred("_do_drop_loot", entries)
 
-func _do_drop_loot(entry: LootEntry) -> void:
+func _do_drop_loot(entries: Array[LootEntry]) -> void:
 	var pickup := WorldManager.spawn_entity(LOOT_PICKUP_SCENE, global_position) as LootPickup
-	pickup.loot_table = [entry]
+	pickup.loot_table = entries

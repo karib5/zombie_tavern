@@ -9,3 +9,4 @@ display_name = "Fiber"
 description = "Plant fiber, useful for crafting rope and basic materials."
 category = 0
 max_stack_size = 30
+weight = 0.3

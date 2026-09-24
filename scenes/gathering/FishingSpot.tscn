@@ -1,0 +1,38 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/gathering/FishingSpot.gd" id="1_fishing_spot_script"]
+[ext_resource type="Script" path="res://resources/definitions/LootEntry.gd" id="2_loot_entry_script"]
+[ext_resource type="Resource" path="res://data/items/SmallFish.tres" id="3_small_fish"]
+[ext_resource type="Resource" path="res://data/items/Carp.tres" id="4_carp"]
+[ext_resource type="Resource" path="res://data/items/Catfish.tres" id="5_catfish"]
+
+[sub_resource type="Resource" id="LootEntry_small_fish"]
+script = ExtResource("2_loot_entry_script")
+item = ExtResource("3_small_fish")
+quantity = 1
+
+[sub_resource type="Resource" id="LootEntry_carp"]
+script = ExtResource("2_loot_entry_script")
+item = ExtResource("4_carp")
+quantity = 1
+
+[sub_resource type="Resource" id="LootEntry_catfish"]
+script = ExtResource("2_loot_entry_script")
+item = ExtResource("5_catfish")
+quantity = 1
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fishing_spot"]
+size = Vector2(600, 500)
+
+[node name="FishingSpot" type="Area2D"]
+collision_layer = 32
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_fishing_spot_script")
+fish_table = Array[Resource]([SubResource("LootEntry_small_fish"), SubResource("LootEntry_carp"), SubResource("LootEntry_catfish")])
+fishing_time_seconds = 3.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_fishing_spot")
+
+[node name="FishingTimer" type="Timer" parent="."]

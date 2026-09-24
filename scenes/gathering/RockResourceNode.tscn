@@ -16,6 +16,7 @@ reward_item = ExtResource("2_stone_item")
 max_amount = 12
 amount_per_gather = 3
 respawn_time_seconds = 10.0
+required_tool_type = 2
 
 [node name="Visual" type="Node2D" parent="."]
 

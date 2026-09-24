@@ -9,3 +9,4 @@ display_name = "Zombie Flesh"
 description = "Rotten flesh salvaged from a fallen zombie. Not edible, but may be useful."
 category = 0
 max_stack_size = 20
+weight = 1.0

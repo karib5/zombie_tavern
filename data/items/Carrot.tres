@@ -9,4 +9,7 @@ display_name = "Carrot"
 description = "A carrot gathered from the wild. Can be eaten raw or cooked."
 category = 1
 max_stack_size = 10
+is_consumable = true
 hunger_restore = 15.0
+weight = 0.5
+spoil_minutes = 2000.0

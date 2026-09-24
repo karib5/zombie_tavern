@@ -16,6 +16,7 @@ reward_item = ExtResource("2_wood_item")
 max_amount = 10
 amount_per_gather = 2
 respawn_time_seconds = 10.0
+required_tool_type = 1
 
 [node name="Visual" type="Node2D" parent="."]
 

@@ -9,4 +9,7 @@ display_name = "Cooked Carrot"
 description = "A carrot cooked over a fire. Restores hunger."
 category = 1
 max_stack_size = 10
+is_consumable = true
 hunger_restore = 25.0
+weight = 0.5
+spoil_minutes = 2500.0

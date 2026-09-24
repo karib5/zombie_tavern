@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/ItemData.gd" id="1_item_data_script"]
+
+[resource]
+script = ExtResource("1_item_data_script")
+item_id = "catfish"
+display_name = "Catfish"
+description = "A large catfish caught from the pond."
+category = 0
+max_stack_size = 20
+is_consumable = true
+hunger_restore = 30.0
+weight = 2.0
+spoil_minutes = 600.0

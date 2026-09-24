@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/ItemData.gd" id="1_item_data_script"]
+
+[resource]
+script = ExtResource("1_item_data_script")
+item_id = "clean_water"
+display_name = "Clean Water"
+description = "Water that has been boiled and is safe to drink."
+category = 1
+max_stack_size = 10
+is_consumable = true
+thirst_restore = 80.0
+weight = 1.0

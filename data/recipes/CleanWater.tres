@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/RecipeData.gd" id="1_recipe_data_script"]
+[ext_resource type="Script" path="res://resources/definitions/LootEntry.gd" id="2_loot_entry_script"]
+[ext_resource type="Resource" path="res://data/items/DirtyWater.tres" id="3_dirty_water"]
+[ext_resource type="Resource" path="res://data/items/CleanWater.tres" id="4_clean_water"]
+
+[sub_resource type="Resource" id="LootEntry_dirty_water"]
+script = ExtResource("2_loot_entry_script")
+item = ExtResource("3_dirty_water")
+quantity = 1
+
+[resource]
+script = ExtResource("1_recipe_data_script")
+recipe_name = "Boil Water"
+category = 0
+ingredients = Array[Resource]([SubResource("LootEntry_dirty_water")])
+output_item = ExtResource("4_clean_water")
+output_quantity = 1
+cook_time_seconds = 3.0

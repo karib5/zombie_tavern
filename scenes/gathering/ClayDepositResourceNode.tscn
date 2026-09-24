@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/gathering/ResourceNode.gd" id="1_resource_node_script"]
+[ext_resource type="Resource" path="res://data/items/Clay.tres" id="2_clay_item"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_clay_deposit"]
+size = Vector2(28, 22)
+
+[node name="ClayDepositResourceNode" type="Area2D"]
+collision_layer = 32
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_resource_node_script")
+resource_name = "Clay"
+reward_item = ExtResource("2_clay_item")
+max_amount = 6
+amount_per_gather = 2
+respawn_time_seconds = 14.0
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="ClayPatch" type="Polygon2D" parent="Visual"]
+polygon = PackedVector2Array(-13, 3, -7, -6, 4, -8, 13, -1, 9, 8, -5, 9)
+color = Color(0.56, 0.36, 0.28, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_clay_deposit")
+
+[node name="RespawnTimer" type="Timer" parent="."]

@@ -9,3 +9,4 @@ display_name = "Carrot Seed"
 description = "A seed that can be planted in a farm plot to grow a carrot."
 category = 0
 max_stack_size = 20
+weight = 0.05

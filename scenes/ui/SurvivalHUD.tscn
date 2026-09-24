@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/SurvivalHUD.gd" id="1_survival_hud_script"]
+
+[node name="SurvivalHUD" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_survival_hud_script")
+
+[node name="Panel" type="Panel" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -170.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 116.0
+
+[node name="HungerLabel" type="Label" parent="Panel"]
+offset_left = 8.0
+offset_top = 4.0
+offset_right = -8.0
+offset_bottom = 22.0
+text = "Hunger: 100 / 100"
+
+[node name="ThirstLabel" type="Label" parent="Panel"]
+offset_left = 8.0
+offset_top = 24.0
+offset_right = -8.0
+offset_bottom = 42.0
+text = "Thirst: 100 / 100"
+
+[node name="TimeLabel" type="Label" parent="Panel"]
+offset_left = 8.0
+offset_top = 44.0
+offset_right = -8.0
+offset_bottom = 62.0
+text = "Day 1  08:00"
+
+[node name="SaveHintLabel" type="Label" parent="Panel"]
+offset_left = 8.0
+offset_top = 68.0
+offset_right = -8.0
+offset_bottom = 98.0
+theme_override_font_sizes/font_size = 12
+text = "F5 Save  F9 Load
+F12 New Game"

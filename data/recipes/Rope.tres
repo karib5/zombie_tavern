@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/RecipeData.gd" id="1_recipe_data_script"]
+[ext_resource type="Script" path="res://resources/definitions/LootEntry.gd" id="2_loot_entry_script"]
+[ext_resource type="Resource" path="res://data/items/Fiber.tres" id="3_fiber"]
+[ext_resource type="Resource" path="res://data/items/Rope.tres" id="4_rope"]
+
+[sub_resource type="Resource" id="LootEntry_fiber"]
+script = ExtResource("2_loot_entry_script")
+item = ExtResource("3_fiber")
+quantity = 3
+
+[resource]
+script = ExtResource("1_recipe_data_script")
+recipe_name = "Rope"
+category = 2
+ingredients = Array[Resource]([SubResource("LootEntry_fiber")])
+output_item = ExtResource("4_rope")
+output_quantity = 1
+cook_time_seconds = 2.0
+requires_station = true
+station_name = "Workbench"

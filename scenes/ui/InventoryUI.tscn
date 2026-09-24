@@ -18,10 +18,17 @@ offset_top = -200.0
 offset_right = 150.0
 offset_bottom = 200.0
 
+[node name="WeightLabel" type="Label" parent="Panel"]
+offset_left = 10.0
+offset_top = 6.0
+offset_right = -10.0
+offset_bottom = 24.0
+text = "Weight: 0.0 / 100.0"
+
 [node name="SlotList" type="VBoxContainer" parent="Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = 10.0
+offset_top = 30.0
 offset_right = -10.0
 offset_bottom = -10.0

@@ -9,4 +9,7 @@ display_name = "Zombie Stew"
 description = "A hearty (if questionable) stew made from zombie flesh. Surprisingly filling."
 category = 1
 max_stack_size = 10
+is_consumable = true
 hunger_restore = 50.0
+weight = 1.5
+spoil_minutes = 1440.0

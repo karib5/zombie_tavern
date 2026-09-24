@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/Player.gd" id="1_player_script"]
 [ext_resource type="Script" path="res://scripts/interaction/InteractionController.gd" id="2_interaction_script"]
@@ -10,6 +10,8 @@
 [ext_resource type="Script" path="res://scripts/player/PlayerDeath.gd" id="8_player_death_script"]
 [ext_resource type="Script" path="res://scripts/player/PlayerAnimator.gd" id="9_player_animator_script"]
 [ext_resource type="SpriteFrames" path="res://resources/player/PlayerSpriteFrames.tres" id="10_player_sprite_frames"]
+[ext_resource type="Script" path="res://scripts/player/PlayerTools.gd" id="11_player_tools_script"]
+[ext_resource type="Script" path="res://scripts/player/PlayerSurvival.gd" id="12_player_survival_script"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
 size = Vector2(28, 28)
@@ -45,8 +47,8 @@ position_smoothing_enabled = true
 position_smoothing_speed = 5.0
 limit_left = 0
 limit_top = 0
-limit_right = 1600
-limit_bottom = 1200
+limit_right = 2800
+limit_bottom = 2000
 
 [node name="InteractionArea" type="Area2D" parent="."]
 collision_layer = 0
@@ -60,9 +62,15 @@ shape = SubResource("CircleShape2D_interaction_range")
 [node name="Inventory" type="Node" parent="."]
 script = ExtResource("3_inventory_script")
 
+[node name="PlayerTools" type="Node" parent="."]
+script = ExtResource("11_player_tools_script")
+
 [node name="Health" type="Node" parent="."]
 script = ExtResource("4_health_script")
 max_health = 100.0
+
+[node name="PlayerSurvival" type="Node" parent="."]
+script = ExtResource("12_player_survival_script")
 
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 130
