@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CropData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/CropData.gd" id="1_crop_data_script"]
+[ext_resource type="Resource" path="res://data/items/CarrotSeed.tres" id="2_carrot_seed"]
+[ext_resource type="Resource" path="res://data/items/Carrot.tres" id="3_carrot"]
+
+[resource]
+script = ExtResource("1_crop_data_script")
+crop_name = "Carrot"
+seed_item = ExtResource("2_carrot_seed")
+harvest_item = ExtResource("3_carrot")
+harvest_quantity = 1
+growth_duration_seconds = 30.0

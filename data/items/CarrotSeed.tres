@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/ItemData.gd" id="1_item_data_script"]
+
+[resource]
+script = ExtResource("1_item_data_script")
+item_id = "carrot_seed"
+display_name = "Carrot Seed"
+description = "A seed that can be planted in a farm plot to grow a carrot."
+category = 0
+max_stack_size = 20
