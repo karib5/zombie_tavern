@@ -1,7 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/buildings/Tavern.tscn" id="1_tavern"]
 [ext_resource type="PackedScene" path="res://scenes/items/TestInteractable.tscn" id="2_test_interactable"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/TreeResourceNode.tscn" id="3_tree_resource_node"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/RockResourceNode.tscn" id="4_rock_resource_node"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/PlantResourceNode.tscn" id="5_plant_resource_node"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boundary_h"]
 size = Vector2(1600, 32)
@@ -58,3 +61,21 @@ position = Vector2(100, 400)
 
 [node name="TestInteractable" parent="Interactables" instance=ExtResource("2_test_interactable")]
 position = Vector2(340, 780)
+
+[node name="Tree1" parent="Interactables" instance=ExtResource("3_tree_resource_node")]
+position = Vector2(900, 300)
+
+[node name="Tree2" parent="Interactables" instance=ExtResource("3_tree_resource_node")]
+position = Vector2(980, 340)
+
+[node name="Rock1" parent="Interactables" instance=ExtResource("4_rock_resource_node")]
+position = Vector2(1200, 900)
+
+[node name="Rock2" parent="Interactables" instance=ExtResource("4_rock_resource_node")]
+position = Vector2(1260, 930)
+
+[node name="Plant1" parent="Interactables" instance=ExtResource("5_plant_resource_node")]
+position = Vector2(500, 950)
+
+[node name="Plant2" parent="Interactables" instance=ExtResource("5_plant_resource_node")]
+position = Vector2(650, 1000)
