@@ -1,14 +1,25 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/Player.gd" id="1_player_script"]
 [ext_resource type="Script" path="res://scripts/interaction/InteractionController.gd" id="2_interaction_script"]
 [ext_resource type="Script" path="res://scripts/inventory/Inventory.gd" id="3_inventory_script"]
+[ext_resource type="Script" path="res://scripts/combat/Health.gd" id="4_health_script"]
+[ext_resource type="Script" path="res://scripts/combat/Hurtbox.gd" id="5_hurtbox_script"]
+[ext_resource type="Script" path="res://scripts/combat/Hitbox.gd" id="6_hitbox_script"]
+[ext_resource type="Script" path="res://scripts/player/PlayerAttack.gd" id="7_player_attack_script"]
+[ext_resource type="Script" path="res://scripts/player/PlayerDeath.gd" id="8_player_death_script"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
 size = Vector2(28, 28)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_interaction_range"]
 radius = 48.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player_hurtbox"]
+size = Vector2(28, 28)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_attack_range"]
+radius = 40.0
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
@@ -43,3 +54,44 @@ shape = SubResource("CircleShape2D_interaction_range")
 
 [node name="Inventory" type="Node" parent="."]
 script = ExtResource("3_inventory_script")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("4_health_script")
+max_health = 100.0
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 130
+collision_mask = 0
+monitorable = true
+monitoring = false
+script = ExtResource("5_hurtbox_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("RectangleShape2D_player_hurtbox")
+
+[node name="AttackHitbox" type="Area2D" parent="."]
+collision_layer = 64
+collision_mask = 4
+monitorable = false
+monitoring = true
+script = ExtResource("6_hitbox_script")
+damage = 20.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitbox"]
+shape = SubResource("CircleShape2D_attack_range")
+disabled = true
+
+[node name="FlashVisual" type="Polygon2D" parent="AttackHitbox"]
+visible = false
+polygon = PackedVector2Array(40, 0, 28, 28, 0, 40, -28, 28, -40, 0, -28, -28, 0, -40, 28, -28)
+color = Color(1, 1, 0.6, 0.35)
+
+[node name="PlayerAttack" type="Node" parent="."]
+script = ExtResource("7_player_attack_script")
+
+[node name="CooldownTimer" type="Timer" parent="PlayerAttack"]
+
+[node name="ActiveTimer" type="Timer" parent="PlayerAttack"]
+
+[node name="PlayerDeath" type="Node" parent="."]
+script = ExtResource("8_player_death_script")
