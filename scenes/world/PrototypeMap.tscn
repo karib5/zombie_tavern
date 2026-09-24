@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/buildings/Tavern.tscn" id="1_tavern"]
 [ext_resource type="PackedScene" path="res://scenes/items/TestInteractable.tscn" id="2_test_interactable"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://scenes/cooking/CookingStation.tscn" id="8_cooking_station"]
 [ext_resource type="PackedScene" path="res://scenes/farming/FarmPlot.tscn" id="9_farm_plot"]
 [ext_resource type="Resource" path="res://data/items/CarrotSeed.tres" id="10_carrot_seed"]
+[ext_resource type="PackedScene" path="res://scenes/tavern/TavernTable.tscn" id="11_tavern_table"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boundary_h"]
 size = Vector2(1600, 32)
@@ -136,3 +137,9 @@ position = Vector2(1030, 630)
 
 [node name="FarmPlot6" parent="Interactables" instance=ExtResource("9_farm_plot")]
 position = Vector2(1110, 630)
+
+[node name="TavernTable1" parent="Interactables" instance=ExtResource("11_tavern_table")]
+position = Vector2(450, 480)
+
+[node name="TavernTable2" parent="Interactables" instance=ExtResource("11_tavern_table")]
+position = Vector2(450, 620)
