@@ -19,6 +19,7 @@ func _ready() -> void:
 	area_exited.connect(_on_area_exited)
 
 func _process(_delta: float) -> void:
+	_update_current_interactable()
 	if _current_interactable and Input.is_action_just_pressed("interact"):
 		_current_interactable.interact(get_parent())
 
@@ -27,14 +28,12 @@ func _on_area_entered(area: Area2D) -> void:
 	if interactable == null:
 		return
 	_nearby_interactables.append(interactable)
-	_update_current_interactable()
 
 func _on_area_exited(area: Area2D) -> void:
 	var interactable := area as Interactable
 	if interactable == null:
 		return
 	_nearby_interactables.erase(interactable)
-	_update_current_interactable()
 
 func _update_current_interactable() -> void:
 	var closest: Interactable = null
