@@ -4,13 +4,13 @@
 
 [resource]
 script = ExtResource("1_survivor_data_script")
-survivor_name = "Villager"
-role = 1
+survivor_name = "Civilian"
+role = 0
 max_health = 60.0
 move_speed = 50.0
 flee_speed = 130.0
 detection_radius = 150.0
-wander_radius = 60.0
+wander_radius = 40.0
 idle_duration_min = 2.0
 idle_duration_max = 5.0
 wander_duration = 3.0

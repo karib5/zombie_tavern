@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/buildings/Tavern.tscn" id="1_tavern"]
 [ext_resource type="PackedScene" path="res://scenes/items/TestInteractable.tscn" id="2_test_interactable"]
@@ -12,6 +12,7 @@
 [ext_resource type="Resource" path="res://data/items/CarrotSeed.tres" id="10_carrot_seed"]
 [ext_resource type="PackedScene" path="res://scenes/tavern/TavernTable.tscn" id="11_tavern_table"]
 [ext_resource type="PackedScene" path="res://scenes/survivors/Survivor.tscn" id="12_survivor"]
+[ext_resource type="Resource" path="res://data/survivors/Civilian.tres" id="13_civilian_data"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boundary_h"]
 size = Vector2(1600, 32)
@@ -93,6 +94,10 @@ position = Vector2(190, 630)
 
 [node name="Survivor2" parent="Entities" instance=ExtResource("12_survivor")]
 position = Vector2(250, 650)
+
+[node name="Civilian1" parent="Entities" instance=ExtResource("12_survivor")]
+position = Vector2(160, 560)
+survivor_data = ExtResource("13_civilian_data")
 
 [node name="Interactables" type="Node2D" parent="."]
 
