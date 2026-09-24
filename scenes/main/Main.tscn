@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/world/PrototypeMap.tscn" id="1_map"]
+[ext_resource type="Script" path="res://scripts/world/Main.gd" id="2_main_script"]
+
+[node name="Main" type="Node"]
+script = ExtResource("2_main_script")
+
+[node name="WorldRoot" type="Node2D" parent="."]
+
+[node name="PrototypeMap" parent="WorldRoot" instance=ExtResource("1_map")]
+
+[node name="CameraRig" type="Node2D" parent="."]
+
+[node name="UILayer" type="CanvasLayer" parent="."]

@@ -1,0 +1,29 @@
+config_version=5
+
+[application]
+
+config/name="Zombie Tavern"
+run/main_scene="res://scenes/main/Main.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+
+[autoload]
+
+EventBus="*res://systems/EventBus.gd"
+GameManager="*res://systems/GameManager.gd"
+WorldManager="*res://systems/WorldManager.gd"
+TimeManager="*res://systems/TimeManager.gd"
+
+[layer_names]
+
+2d_physics/layer_1="world"
+2d_physics/layer_2="player"
+2d_physics/layer_3="enemies"
+2d_physics/layer_4="animals"
+2d_physics/layer_5="survivors"
+2d_physics/layer_6="interactables"
+2d_physics/layer_7="hitbox"
+2d_physics/layer_8="hurtbox"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
