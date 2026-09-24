@@ -91,8 +91,11 @@ func _on_attack_cooldown_timeout() -> void:
 func _on_died() -> void:
 	state = State.DEAD
 	velocity = Vector2.ZERO
-	_collision_shape.disabled = true
-	_hurtbox_shape.disabled = true
+	# Death can be triggered synchronously from within a Hitbox's
+	# area_entered (a physics query-flush context), so collision shape
+	# changes must be deferred rather than applied directly here.
+	_collision_shape.set_deferred("disabled", true)
+	_hurtbox_shape.set_deferred("disabled", true)
 	_decision_timer.stop()
 	_visual.modulate = Color(0.25, 0.25, 0.25, 1.0)
 	WorldManager.active_zombies.erase(self)
@@ -104,5 +107,12 @@ func _drop_loot() -> void:
 	var entry := LootEntry.new()
 	entry.item = loot_item
 	entry.quantity = loot_quantity
+	# Deferred: adding a new physics-enabled node to the tree while still
+	# inside a physics query-flush (death can be triggered synchronously
+	# from a Hitbox's area_entered) is rejected by the physics server,
+	# same as the collision shape changes above.
+	call_deferred("_do_drop_loot", entry)
+
+func _do_drop_loot(entry: LootEntry) -> void:
 	var pickup := WorldManager.spawn_entity(LOOT_PICKUP_SCENE, global_position) as LootPickup
 	pickup.loot_table = [entry]
