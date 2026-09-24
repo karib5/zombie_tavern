@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/interaction/TestInteractable.gd" id="1_test_interactable_script"]
+[ext_resource type="Resource" path="res://data/items/Carrot.tres" id="2_carrot_item"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_test_interactable"]
 size = Vector2(32, 32)
@@ -10,6 +11,8 @@ collision_layer = 32
 collision_mask = 0
 monitoring = false
 script = ExtResource("1_test_interactable_script")
+item_to_give = ExtResource("2_carrot_item")
+item_quantity = 1
 
 [node name="Visual" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
