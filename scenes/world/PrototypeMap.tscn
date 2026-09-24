@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/buildings/Tavern.tscn" id="1_tavern"]
 [ext_resource type="PackedScene" path="res://scenes/items/TestInteractable.tscn" id="2_test_interactable"]
 [ext_resource type="PackedScene" path="res://scenes/gathering/TreeResourceNode.tscn" id="3_tree_resource_node"]
 [ext_resource type="PackedScene" path="res://scenes/gathering/RockResourceNode.tscn" id="4_rock_resource_node"]
 [ext_resource type="PackedScene" path="res://scenes/gathering/PlantResourceNode.tscn" id="5_plant_resource_node"]
+[ext_resource type="PackedScene" path="res://scenes/zombies/Zombie.tscn" id="6_zombie"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boundary_h"]
 size = Vector2(1600, 32)
@@ -56,6 +57,15 @@ shape = SubResource("RectangleShape2D_boundary_v")
 position = Vector2(100, 400)
 
 [node name="Entities" type="Node2D" parent="."]
+
+[node name="Zombie1" parent="Entities" instance=ExtResource("6_zombie")]
+position = Vector2(1100, 200)
+
+[node name="Zombie2" parent="Entities" instance=ExtResource("6_zombie")]
+position = Vector2(300, 150)
+
+[node name="Zombie3" parent="Entities" instance=ExtResource("6_zombie")]
+position = Vector2(1400, 600)
 
 [node name="Interactables" type="Node2D" parent="."]
 

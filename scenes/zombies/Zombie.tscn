@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/ai/ZombieAI.gd" id="1_zombie_ai_script"]
+[ext_resource type="Script" path="res://scripts/combat/Health.gd" id="2_health_script"]
+[ext_resource type="Script" path="res://scripts/combat/Hurtbox.gd" id="3_hurtbox_script"]
+[ext_resource type="Resource" path="res://data/items/ZombieFlesh.tres" id="4_zombie_flesh_item"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_zombie_body"]
+size = Vector2(30, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_zombie_hurtbox"]
+size = Vector2(30, 30)
+
+[node name="Zombie" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+motion_mode = 1
+script = ExtResource("1_zombie_ai_script")
+loot_item = ExtResource("4_zombie_flesh_item")
+loot_quantity = 2
+
+[node name="Visual" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-15, -15, 15, -15, 15, 15, -15, 15)
+color = Color(0.4, 0.2, 0.2, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_zombie_body")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("2_health_script")
+max_health = 50.0
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 132
+collision_mask = 0
+monitorable = true
+monitoring = false
+script = ExtResource("3_hurtbox_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("RectangleShape2D_zombie_hurtbox")
+
+[node name="DecisionTimer" type="Timer" parent="."]
+
+[node name="AttackCooldownTimer" type="Timer" parent="."]

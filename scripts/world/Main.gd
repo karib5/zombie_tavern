@@ -5,6 +5,7 @@ const PLAYER_SCENE: PackedScene = preload("res://scenes/player/Player.tscn")
 @onready var world_root: Node2D = $WorldRoot
 @onready var interaction_prompt: InteractionPrompt = $UILayer/InteractionPrompt
 @onready var inventory_ui: InventoryUI = $UILayer/InventoryUI
+@onready var health_ui: HealthUI = $UILayer/HealthUI
 
 func _ready() -> void:
 	WorldManager.register_current_map(world_root)
@@ -21,3 +22,6 @@ func _spawn_player() -> void:
 
 	var inventory := player.get_node("Inventory") as Inventory
 	inventory_ui.set_inventory(inventory)
+
+	var health := player.get_node("Health") as Health
+	health_ui.set_health(health)
