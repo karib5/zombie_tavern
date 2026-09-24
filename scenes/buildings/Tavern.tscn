@@ -1,0 +1,83 @@
+[gd_scene load_steps=4 format=3]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_horiz_full"]
+size = Vector2(480, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_horiz_half"]
+size = Vector2(200, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vert"]
+size = Vector2(16, 320)
+
+[node name="Tavern" type="Node2D"]
+
+[node name="Floor" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(0, 0, 480, 0, 480, 320, 0, 320)
+color = Color(0.42, 0.31, 0.2, 1)
+
+[node name="WallVisuals" type="Node2D" parent="."]
+
+[node name="NorthVisual" type="Polygon2D" parent="WallVisuals"]
+polygon = PackedVector2Array(0, -16, 480, -16, 480, 0, 0, 0)
+color = Color(0.25, 0.22, 0.2, 1)
+
+[node name="SouthLeftVisual" type="Polygon2D" parent="WallVisuals"]
+polygon = PackedVector2Array(0, 320, 200, 320, 200, 336, 0, 336)
+color = Color(0.25, 0.22, 0.2, 1)
+
+[node name="SouthRightVisual" type="Polygon2D" parent="WallVisuals"]
+polygon = PackedVector2Array(280, 320, 480, 320, 480, 336, 280, 336)
+color = Color(0.25, 0.22, 0.2, 1)
+
+[node name="WestVisual" type="Polygon2D" parent="WallVisuals"]
+polygon = PackedVector2Array(-16, 0, 0, 0, 0, 320, -16, 320)
+color = Color(0.25, 0.22, 0.2, 1)
+
+[node name="EastVisual" type="Polygon2D" parent="WallVisuals"]
+polygon = PackedVector2Array(480, 0, 496, 0, 496, 320, 480, 320)
+color = Color(0.25, 0.22, 0.2, 1)
+
+[node name="WallColliders" type="Node2D" parent="."]
+
+[node name="NorthWall" type="StaticBody2D" parent="WallColliders"]
+position = Vector2(240, -8)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallColliders/NorthWall"]
+shape = SubResource("RectangleShape2D_horiz_full")
+
+[node name="SouthLeftWall" type="StaticBody2D" parent="WallColliders"]
+position = Vector2(100, 328)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallColliders/SouthLeftWall"]
+shape = SubResource("RectangleShape2D_horiz_half")
+
+[node name="SouthRightWall" type="StaticBody2D" parent="WallColliders"]
+position = Vector2(380, 328)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallColliders/SouthRightWall"]
+shape = SubResource("RectangleShape2D_horiz_half")
+
+[node name="WestWall" type="StaticBody2D" parent="WallColliders"]
+position = Vector2(-8, 160)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallColliders/WestWall"]
+shape = SubResource("RectangleShape2D_vert")
+
+[node name="EastWall" type="StaticBody2D" parent="WallColliders"]
+position = Vector2(488, 160)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallColliders/EastWall"]
+shape = SubResource("RectangleShape2D_vert")
+
+[node name="PlayerSpawnPoint" type="Marker2D" parent="."]
+position = Vector2(240, 160)
