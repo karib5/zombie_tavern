@@ -11,6 +11,7 @@ extends Node
 @onready var _hitbox_visual: CanvasItem = _hitbox.get_node("FlashVisual")
 @onready var _cooldown_timer: Timer = $CooldownTimer
 @onready var _active_timer: Timer = $ActiveTimer
+@onready var _animator: PlayerAnimator = get_parent().get_node_or_null("Visual")
 
 var _can_attack: bool = true
 
@@ -29,6 +30,8 @@ func _process(_delta: float) -> void:
 
 func _start_attack() -> void:
 	_can_attack = false
+	if _animator:
+		_animator.play_attack()
 	_hitbox.reset_hit_targets()
 	# Deferred defensively: this can run in the same frame a previous
 	# swing's physics callback (e.g. a target's death handling) is still
