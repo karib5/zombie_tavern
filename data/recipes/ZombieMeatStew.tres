@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/RecipeData.gd" id="1_recipe_data_script"]
+[ext_resource type="Script" path="res://resources/definitions/LootEntry.gd" id="2_loot_entry_script"]
+[ext_resource type="Resource" path="res://data/items/ZombieFlesh.tres" id="3_zombie_flesh"]
+[ext_resource type="Resource" path="res://data/items/ZombieStew.tres" id="4_zombie_stew"]
+
+[sub_resource type="Resource" id="LootEntry_zombie_flesh"]
+script = ExtResource("2_loot_entry_script")
+item = ExtResource("3_zombie_flesh")
+quantity = 2
+
+[resource]
+script = ExtResource("1_recipe_data_script")
+recipe_name = "Zombie Meat Stew"
+ingredients = Array[Resource]([SubResource("LootEntry_zombie_flesh")])
+output_item = ExtResource("4_zombie_stew")
+output_quantity = 1
+cook_time_seconds = 4.0

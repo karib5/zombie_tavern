@@ -6,6 +6,7 @@ const PLAYER_SCENE: PackedScene = preload("res://scenes/player/Player.tscn")
 @onready var interaction_prompt: InteractionPrompt = $UILayer/InteractionPrompt
 @onready var inventory_ui: InventoryUI = $UILayer/InventoryUI
 @onready var health_ui: HealthUI = $UILayer/HealthUI
+@onready var cooking_ui: CookingUI = $UILayer/CookingUI
 
 func _ready() -> void:
 	WorldManager.register_current_map(world_root)
@@ -25,3 +26,7 @@ func _spawn_player() -> void:
 
 	var health := player.get_node("Health") as Health
 	health_ui.set_health(health)
+
+	cooking_ui.set_inventory(inventory)
+	for station in get_tree().get_nodes_in_group("cooking_stations"):
+		(station as CookingStation).opened.connect(cooking_ui.open)

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/RecipeData.gd" id="1_recipe_data_script"]
+[ext_resource type="Script" path="res://resources/definitions/LootEntry.gd" id="2_loot_entry_script"]
+[ext_resource type="Resource" path="res://data/items/RawRabbitMeat.tres" id="3_raw_rabbit_meat"]
+[ext_resource type="Resource" path="res://data/items/CookedMeat.tres" id="4_cooked_meat"]
+
+[sub_resource type="Resource" id="LootEntry_raw_rabbit_meat"]
+script = ExtResource("2_loot_entry_script")
+item = ExtResource("3_raw_rabbit_meat")
+quantity = 1
+
+[resource]
+script = ExtResource("1_recipe_data_script")
+recipe_name = "Cooked Rabbit"
+ingredients = Array[Resource]([SubResource("LootEntry_raw_rabbit_meat")])
+output_item = ExtResource("4_cooked_meat")
+output_quantity = 1
+cook_time_seconds = 3.0

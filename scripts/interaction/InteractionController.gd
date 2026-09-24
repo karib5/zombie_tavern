@@ -36,6 +36,14 @@ func _on_area_exited(area: Area2D) -> void:
 	_nearby_interactables.erase(interactable)
 
 func _update_current_interactable() -> void:
+	# Prune anything freed or no longer available every tick, rather than
+	# relying solely on area_exited (which a queue_free()'d or disabled
+	# object isn't guaranteed to fire in time, if at all). This is the
+	# same small nearby-only list as before, so it stays cheap.
+	_nearby_interactables = _nearby_interactables.filter(
+		func(interactable): return is_instance_valid(interactable) and interactable.is_available()
+	)
+
 	var closest: Interactable = null
 	var closest_distance := INF
 	for interactable in _nearby_interactables:

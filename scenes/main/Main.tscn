@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/world/PrototypeMap.tscn" id="1_map"]
 [ext_resource type="Script" path="res://scripts/world/Main.gd" id="2_main_script"]
 [ext_resource type="PackedScene" path="res://scenes/ui/InteractionPrompt.tscn" id="3_interaction_prompt"]
 [ext_resource type="PackedScene" path="res://scenes/ui/InventoryUI.tscn" id="4_inventory_ui"]
 [ext_resource type="PackedScene" path="res://scenes/ui/HealthUI.tscn" id="5_health_ui"]
+[ext_resource type="PackedScene" path="res://scenes/ui/CookingUI.tscn" id="6_cooking_ui"]
 
 [node name="Main" type="Node"]
 script = ExtResource("2_main_script")
@@ -22,3 +23,5 @@ script = ExtResource("2_main_script")
 [node name="InventoryUI" parent="UILayer" instance=ExtResource("4_inventory_ui")]
 
 [node name="HealthUI" parent="UILayer" instance=ExtResource("5_health_ui")]
+
+[node name="CookingUI" parent="UILayer" instance=ExtResource("6_cooking_ui")]
