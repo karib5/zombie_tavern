@@ -7,6 +7,7 @@ const PLAYER_SCENE: PackedScene = preload("res://scenes/player/Player.tscn")
 @onready var inventory_ui: InventoryUI = $UILayer/InventoryUI
 @onready var health_ui: HealthUI = $UILayer/HealthUI
 @onready var cooking_ui: CookingUI = $UILayer/CookingUI
+@onready var attack_event_ui: AttackEventUI = $UILayer/AttackEventUI
 
 func _ready() -> void:
 	WorldManager.register_current_map(world_root)
@@ -30,3 +31,7 @@ func _spawn_player() -> void:
 	cooking_ui.set_inventory(inventory)
 	for station in get_tree().get_nodes_in_group("cooking_stations"):
 		(station as CookingStation).opened.connect(cooking_ui.open)
+
+	var attack_events := get_tree().get_nodes_in_group("tavern_attack_events")
+	if attack_events.size() > 0:
+		attack_event_ui.set_attack_event(attack_events[0] as TavernAttackEvent)
