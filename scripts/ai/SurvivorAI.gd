@@ -1,7 +1,7 @@
 class_name SurvivorAI
 extends CharacterBody2D
 
-enum State { IDLE, WANDER, FLEE, EAT, DEAD }
+enum State { IDLE, WANDER, FLEE, EAT, GUARD, GUARD_ATTACK, DEAD }
 
 ## Identity/config data for this survivor. Fields are copied onto this
 ## instance in _ready() (health, speeds, wander/detection radii, hunger),
@@ -34,6 +34,7 @@ var hunger: float = 100.0
 @onready var _decision_timer: Timer = $DecisionTimer
 @onready var _behavior_timer: Timer = $BehaviorTimer
 @onready var _eat_timer: Timer = $EatTimer
+@onready var _guard_attack_cooldown_timer: Timer = $GuardAttackCooldownTimer
 @onready var _hunger_label: Label = get_node_or_null("HungerLabel")
 
 var _move_speed: float = 50.0
@@ -46,11 +47,26 @@ var _hungry_threshold: float = 40.0
 var _critical_hunger_threshold: float = 15.0
 var _eating_duration_seconds: float = 2.0
 
+var _role: SurvivorData.Role = SurvivorData.Role.NONE
+var _attack_damage: float = 15.0
+var _attack_range: float = 32.0
+var _attack_cooldown: float = 1.0
+var _can_guard_attack: bool = true
+
+## Base (non-transient) visual tint - white for a regular survivor, a light
+## tint for a guard. EAT/DEAD temporarily override this and restore it
+## afterward, instead of always resetting to plain white.
+var _base_visual_modulate: Color = Color.WHITE
+
 ## Center point wandering is bounded around - the survivor's spawn point,
-## not the whole map.
+## not the whole map. Also used as the guard's home/return position.
 var wander_center: Vector2
+var guard_position: Vector2
 var _wander_target: Vector2
 var _flee_direction: Vector2 = Vector2.ZERO
+
+## The zombie currently being pursued/attacked while guarding, or null.
+var _target_zombie: ZombieAI = null
 
 ## The table currently being approached/eaten from, or null when not
 ## seeking food. Non-null takes priority over the idle/wander cycle.
@@ -59,6 +75,7 @@ var _pending_hunger_restore: float = 0.0
 
 func _ready() -> void:
 	wander_center = global_position
+	guard_position = global_position
 	_wander_target = global_position
 
 	if survivor_data != null:
@@ -77,8 +94,17 @@ func _ready() -> void:
 		_critical_hunger_threshold = survivor_data.critical_hunger_threshold
 		_eating_duration_seconds = survivor_data.eating_duration_seconds
 		hunger = clampf(survivor_data.starting_hunger, 0.0, _max_hunger)
+
+		_role = survivor_data.role
+		_attack_damage = survivor_data.attack_damage
+		_attack_range = survivor_data.attack_range
+		_attack_cooldown = survivor_data.attack_cooldown
 	else:
 		hunger = _max_hunger
+
+	if _role == SurvivorData.Role.GUARD:
+		_base_visual_modulate = Color(0.6, 0.75, 1.0, 1.0)
+		_visual.modulate = _base_visual_modulate
 
 	_update_hunger_label()
 
@@ -91,10 +117,17 @@ func _ready() -> void:
 	_behavior_timer.wait_time = behavior_retarget_interval
 	_behavior_timer.timeout.connect(_pick_idle_or_wander)
 	_behavior_timer.start()
-	_pick_idle_or_wander()
+
+	if _role == SurvivorData.Role.GUARD:
+		state = State.GUARD
+	else:
+		_pick_idle_or_wander()
 
 	_eat_timer.one_shot = true
 	_eat_timer.timeout.connect(_on_eat_timer_timeout)
+
+	_guard_attack_cooldown_timer.one_shot = true
+	_guard_attack_cooldown_timer.timeout.connect(_on_guard_attack_cooldown_timeout)
 
 	WorldManager.active_survivors.append(self)
 
@@ -116,6 +149,21 @@ func _physics_process(delta: float) -> void:
 			move_and_slide()
 		State.EAT:
 			velocity = Vector2.ZERO
+		State.GUARD:
+			if global_position.distance_to(guard_position) > 4.0:
+				velocity = global_position.direction_to(guard_position) * _move_speed
+				move_and_slide()
+			else:
+				velocity = Vector2.ZERO
+		State.GUARD_ATTACK:
+			if _target_zombie != null and is_instance_valid(_target_zombie):
+				if global_position.distance_to(_target_zombie.global_position) > _attack_range:
+					velocity = global_position.direction_to(_target_zombie.global_position) * _move_speed
+					move_and_slide()
+				else:
+					velocity = Vector2.ZERO
+			else:
+				velocity = Vector2.ZERO
 		State.DEAD:
 			velocity = Vector2.ZERO
 
@@ -124,6 +172,12 @@ func _update_state() -> void:
 		return
 
 	_update_hunger_label()
+
+	# Guards fight nearby zombies instead of fleeing them - everything else
+	# (hunger interrupting, dying) is shared with regular survivors.
+	if _role == SurvivorData.Role.GUARD:
+		_update_guard_state(_find_nearest_danger())
+		return
 
 	var danger := _find_nearest_danger()
 	if danger != null:
@@ -147,6 +201,58 @@ func _update_state() -> void:
 
 	if was_fleeing and _target_table == null:
 		_pick_idle_or_wander()
+
+## Priority for a guard: an already-active meal finishes uninterrupted;
+## otherwise hunger below the threshold takes priority over guarding
+## (temporarily leaving GUARD/GUARD_ATTACK to eat), and only once fed does
+## the guard resume tracking/engaging zombies, falling back to holding its
+## guard position when there is no threat.
+func _update_guard_state(nearby_zombie: Node2D) -> void:
+	if state == State.EAT:
+		return  # the EatTimer drives the return to guard behavior
+
+	if hunger <= _hungry_threshold:
+		if state == State.GUARD_ATTACK:
+			_target_zombie = null
+		_update_hunger_behavior()
+		if _target_table != null:
+			if state != State.EAT:
+				_visual.modulate = _base_visual_modulate  # drop any combat tint while walking to food
+			return  # actively seeking/eating food takes priority over guarding
+
+	if nearby_zombie != null:
+		_target_zombie = nearby_zombie as ZombieAI
+	elif _target_zombie != null and (not is_instance_valid(_target_zombie) or _target_zombie.state == ZombieAI.State.DEAD):
+		_target_zombie = null
+
+	# Don't let a chase pull the guard far from its post.
+	if _target_zombie != null:
+		var distance_to_zombie := global_position.distance_to(_target_zombie.global_position)
+		var distance_from_post := global_position.distance_to(guard_position)
+		if distance_from_post > _wander_radius and distance_to_zombie > _attack_range:
+			_target_zombie = null
+
+	if _target_zombie != null:
+		state = State.GUARD_ATTACK
+		_visual.modulate = Color(1.0, 0.5, 0.4, 1.0)
+		if global_position.distance_to(_target_zombie.global_position) <= _attack_range:
+			_try_guard_attack()
+	else:
+		state = State.GUARD
+		_visual.modulate = _base_visual_modulate
+
+func _try_guard_attack() -> void:
+	if not _can_guard_attack or _target_zombie == null:
+		return
+	var hurtbox := _target_zombie.get_node_or_null("Hurtbox") as Hurtbox
+	if hurtbox == null:
+		return
+	hurtbox.take_hit(_attack_damage)
+	_can_guard_attack = false
+	_guard_attack_cooldown_timer.start(_attack_cooldown)
+
+func _on_guard_attack_cooldown_timeout() -> void:
+	_can_guard_attack = true
 
 ## Below the hungry threshold, seeks out a TavernTable with available food
 ## instead of the normal idle/wander cycle. Reuses WANDER's move-toward-
@@ -196,7 +302,7 @@ func _start_eating(table: TavernTable) -> void:
 		# Someone else took the last serving first - fall back to normal
 		# behavior and try again on a later tick.
 		_target_table = null
-		_pick_idle_or_wander()
+		_resume_non_eating_behavior()
 		return
 
 	_pending_hunger_restore = food.hunger_restore
@@ -207,18 +313,27 @@ func _start_eating(table: TavernTable) -> void:
 
 func _on_eat_timer_timeout() -> void:
 	_apply_pending_hunger_restore()
-	_visual.modulate = Color.WHITE
 	_target_table = null
-	# _pick_idle_or_wander() no-ops while state == EAT, so leave EAT first -
-	# otherwise the survivor would stay frozen here after every meal.
-	state = State.IDLE
-	_pick_idle_or_wander()
+	_resume_non_eating_behavior()
 
 func _stop_eating() -> void:
 	_eat_timer.stop()
 	_apply_pending_hunger_restore()
-	_visual.modulate = Color.WHITE
+	_visual.modulate = _base_visual_modulate
 	_target_table = null
+
+## Leaves EAT and hands control back to the role-appropriate behavior:
+## a guard returns to GUARD (re-evaluated next decision tick), a regular
+## survivor picks a fresh idle/wander leg.
+func _resume_non_eating_behavior() -> void:
+	_visual.modulate = _base_visual_modulate
+	if _role == SurvivorData.Role.GUARD:
+		state = State.GUARD
+	else:
+		# _pick_idle_or_wander() no-ops while state == EAT, so leave EAT
+		# first - otherwise the survivor would stay frozen here.
+		state = State.IDLE
+		_pick_idle_or_wander()
 
 func _apply_pending_hunger_restore() -> void:
 	hunger = minf(hunger + _pending_hunger_restore, _max_hunger)
@@ -226,7 +341,11 @@ func _apply_pending_hunger_restore() -> void:
 	_update_hunger_label()
 
 func _update_hunger_label() -> void:
-	if _hunger_label != null:
+	if _hunger_label == null:
+		return
+	if _role == SurvivorData.Role.GUARD:
+		_hunger_label.text = "Hunger: %d | %s" % [int(hunger), State.keys()[state]]
+	else:
 		_hunger_label.text = "Hunger: %d" % int(hunger)
 
 ## Nearest living zombie currently inside DetectionArea, or null. Reuses
@@ -248,6 +367,8 @@ func _find_nearest_danger() -> Node2D:
 	return nearest
 
 func _pick_idle_or_wander() -> void:
+	if _role == SurvivorData.Role.GUARD:
+		return  # guards use GUARD/GUARD_ATTACK instead of idle/wander
 	if state == State.DEAD or state == State.FLEE or state == State.EAT or _target_table != null:
 		return
 	if randf() < 0.5:
@@ -269,7 +390,9 @@ func _on_died() -> void:
 	_decision_timer.stop()
 	_behavior_timer.stop()
 	_eat_timer.stop()
+	_guard_attack_cooldown_timer.stop()
 	_target_table = null
+	_target_zombie = null
 	set_physics_process(false)
 	_visual.modulate = Color(0.4, 0.4, 0.4, 1.0)
 	WorldManager.active_survivors.erase(self)
