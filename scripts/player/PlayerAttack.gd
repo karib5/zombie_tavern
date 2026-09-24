@@ -30,13 +30,17 @@ func _process(_delta: float) -> void:
 func _start_attack() -> void:
 	_can_attack = false
 	_hitbox.reset_hit_targets()
-	_hitbox_shape.disabled = false
+	# Deferred defensively: this can run in the same frame a previous
+	# swing's physics callback (e.g. a target's death handling) is still
+	# being flushed, and the physics server rejects direct shape changes
+	# made from within that window.
+	_hitbox_shape.set_deferred("disabled", false)
 	_hitbox_visual.visible = true
 	_active_timer.start(attack_active_seconds)
 	_cooldown_timer.start(cooldown_seconds)
 
 func _end_attack() -> void:
-	_hitbox_shape.disabled = true
+	_hitbox_shape.set_deferred("disabled", true)
 	_hitbox_visual.visible = false
 
 func _on_cooldown_timeout() -> void:
