@@ -40,6 +40,9 @@ var hunger: float = 100.0
 var _move_speed: float = 50.0
 var _flee_speed: float = 130.0
 var _wander_radius: float = 60.0
+var _idle_duration_min: float = 2.0
+var _idle_duration_max: float = 5.0
+var _wander_duration: float = 3.0
 
 var _max_hunger: float = 100.0
 var _hunger_decay_per_second: float = 0.5
@@ -84,6 +87,9 @@ func _ready() -> void:
 		_move_speed = survivor_data.move_speed
 		_flee_speed = survivor_data.flee_speed
 		_wander_radius = survivor_data.wander_radius
+		_idle_duration_min = survivor_data.idle_duration_min
+		_idle_duration_max = survivor_data.idle_duration_max
+		_wander_duration = survivor_data.wander_duration
 		var detection_shape := (_detection_area.get_node("CollisionShape2D") as CollisionShape2D).shape as CircleShape2D
 		if detection_shape != null:
 			detection_shape.radius = survivor_data.detection_radius
@@ -366,17 +372,34 @@ func _find_nearest_danger() -> Node2D:
 			nearest_distance = distance
 	return nearest
 
+## Picks the next idle/wander leg for a non-guard survivor - IDLE for a
+## randomized 2-5s-ish pause, or a short WANDER leg toward a destination
+## bounded within wander_radius of wander_center. Called only from the
+## throttled BehaviorTimer (rescheduled with a fresh duration each time,
+## rather than a fixed repeating interval) and from the FLEE-clear path in
+## _update_state() - never every frame.
 func _pick_idle_or_wander() -> void:
 	if _role == SurvivorData.Role.GUARD:
 		return  # guards use GUARD/GUARD_ATTACK instead of idle/wander
 	if state == State.DEAD or state == State.FLEE or state == State.EAT or _target_table != null:
 		return
+
+	if global_position.distance_to(wander_center) > _wander_radius:
+		# Pulled outside the allowed home area (e.g. after fleeing) - head
+		# straight back instead of picking another random destination.
+		state = State.WANDER
+		_wander_target = wander_center
+		_behavior_timer.start(_wander_duration)
+		return
+
 	if randf() < 0.5:
 		state = State.IDLE
+		_behavior_timer.start(randf_range(_idle_duration_min, _idle_duration_max))
 	else:
 		state = State.WANDER
 		var offset := Vector2(randf_range(-_wander_radius, _wander_radius), randf_range(-_wander_radius, _wander_radius))
 		_wander_target = wander_center + offset
+		_behavior_timer.start(_wander_duration)
 
 func _on_died() -> void:
 	state = State.DEAD

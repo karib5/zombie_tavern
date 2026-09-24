@@ -14,6 +14,13 @@ enum Role { NONE, GUARD }
 @export var detection_radius: float = 150.0
 @export var wander_radius: float = 60.0
 
+## Only meaningful for role == NONE - how long a survivor pauses between
+## wander legs, and roughly how long each wander leg lasts before the next
+## idle/wander decision is re-evaluated.
+@export var idle_duration_min: float = 2.0
+@export var idle_duration_max: float = 5.0
+@export var wander_duration: float = 3.0
+
 @export var max_hunger: float = 100.0
 @export var starting_hunger: float = 100.0
 @export var hunger_decay_per_second: float = 0.5
