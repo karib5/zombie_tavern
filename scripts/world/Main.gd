@@ -4,6 +4,7 @@ const PLAYER_SCENE: PackedScene = preload("res://scenes/player/Player.tscn")
 
 @onready var world_root: Node2D = $WorldRoot
 @onready var interaction_prompt: InteractionPrompt = $UILayer/InteractionPrompt
+@onready var inventory_ui: InventoryUI = $UILayer/InventoryUI
 
 func _ready() -> void:
 	WorldManager.register_current_map(world_root)
@@ -17,3 +18,6 @@ func _spawn_player() -> void:
 
 	var interaction_controller := player.get_node("InteractionArea") as InteractionController
 	interaction_controller.interactable_changed.connect(interaction_prompt.set_interactable)
+
+	var inventory := player.get_node("Inventory") as Inventory
+	inventory_ui.set_inventory(inventory)

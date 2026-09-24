@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/Player.gd" id="1_player_script"]
 [ext_resource type="Script" path="res://scripts/interaction/InteractionController.gd" id="2_interaction_script"]
+[ext_resource type="Script" path="res://scripts/inventory/Inventory.gd" id="3_inventory_script"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
 size = Vector2(28, 28)
@@ -39,3 +40,6 @@ script = ExtResource("2_interaction_script")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 shape = SubResource("CircleShape2D_interaction_range")
+
+[node name="Inventory" type="Node" parent="."]
+script = ExtResource("3_inventory_script")

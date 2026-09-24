@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/ItemData.gd" id="1_item_data_script"]
+
+[resource]
+script = ExtResource("1_item_data_script")
+item_id = "cooked_meat"
+display_name = "Cooked Meat"
+description = "Meat cooked over a fire. Restores hunger."
+category = 1
+max_stack_size = 10
