@@ -218,69 +218,91 @@ position = Vector2(980, 340)
 
 [node name="Tree3" parent="Interactables" instance=ExtResource("3_tree_resource_node")]
 position = Vector2(1700, 150)
+world_region = "forest"
 
 [node name="Tree4" parent="Interactables" instance=ExtResource("3_tree_resource_node")]
 position = Vector2(1780, 180)
+world_region = "forest"
 
 [node name="Tree5" parent="Interactables" instance=ExtResource("3_tree_resource_node")]
 position = Vector2(1900, 300)
+world_region = "forest"
 
 [node name="Tree6" parent="Interactables" instance=ExtResource("3_tree_resource_node")]
 position = Vector2(2050, 220)
+world_region = "forest"
 
 [node name="SmallTree1" parent="Interactables" instance=ExtResource("16_small_tree_resource_node")]
 position = Vector2(1720, 400)
+world_region = "forest"
 
 [node name="SmallTree2" parent="Interactables" instance=ExtResource("16_small_tree_resource_node")]
 position = Vector2(1850, 450)
+world_region = "forest"
 
 [node name="SmallTree3" parent="Interactables" instance=ExtResource("16_small_tree_resource_node")]
 position = Vector2(2000, 500)
+world_region = "forest"
 
 [node name="TreeStump1" parent="Interactables" instance=ExtResource("17_tree_stump_resource_node")]
 position = Vector2(1950, 150)
+world_region = "forest"
 
 [node name="TreeStump2" parent="Interactables" instance=ExtResource("17_tree_stump_resource_node")]
 position = Vector2(2200, 300)
+world_region = "forest"
 
 [node name="FallenLog1" parent="Interactables" instance=ExtResource("22_fallen_log_resource_node")]
 position = Vector2(1700, 600)
+world_region = "forest"
 
 [node name="FallenLog2" parent="Interactables" instance=ExtResource("22_fallen_log_resource_node")]
 position = Vector2(2100, 650)
+world_region = "forest"
 
 [node name="BranchPile1" parent="Interactables" instance=ExtResource("21_branch_pile_resource_node")]
 position = Vector2(1800, 550)
+world_region = "forest"
 
 [node name="BranchPile2" parent="Interactables" instance=ExtResource("21_branch_pile_resource_node")]
 position = Vector2(2300, 200)
+world_region = "forest"
 
 [node name="BranchPile3" parent="Interactables" instance=ExtResource("21_branch_pile_resource_node")]
 position = Vector2(2450, 500)
+world_region = "forest"
 
 [node name="BerryBush1" parent="Interactables" instance=ExtResource("20_berry_bush_resource_node")]
 position = Vector2(2350, 350)
+world_region = "forest"
 
 [node name="BerryBush2" parent="Interactables" instance=ExtResource("20_berry_bush_resource_node")]
 position = Vector2(2550, 200)
+world_region = "forest"
 
 [node name="BerryBush3" parent="Interactables" instance=ExtResource("20_berry_bush_resource_node")]
 position = Vector2(2600, 600)
+world_region = "forest"
 
 [node name="Flower1" parent="Interactables" instance=ExtResource("25_flower_resource_node")]
 position = Vector2(2000, 650)
+world_region = "forest"
 
 [node name="Flower2" parent="Interactables" instance=ExtResource("25_flower_resource_node")]
 position = Vector2(2500, 700)
+world_region = "forest"
 
 [node name="Flower3" parent="Interactables" instance=ExtResource("25_flower_resource_node")]
 position = Vector2(2100, 1700)
+world_region = "mining"
 
 [node name="Flower4" parent="Interactables" instance=ExtResource("25_flower_resource_node")]
 position = Vector2(2400, 1850)
+world_region = "mining"
 
 [node name="Flower5" parent="Interactables" instance=ExtResource("25_flower_resource_node")]
 position = Vector2(1800, 1850)
+world_region = "mining"
 
 [node name="Rock1" parent="Interactables" instance=ExtResource("4_rock_resource_node")]
 position = Vector2(1200, 900)
@@ -290,45 +312,57 @@ position = Vector2(1260, 930)
 
 [node name="Rock3" parent="Interactables" instance=ExtResource("4_rock_resource_node")]
 position = Vector2(1750, 900)
+world_region = "mining"
 
 [node name="Rock4" parent="Interactables" instance=ExtResource("4_rock_resource_node")]
 position = Vector2(1900, 950)
+world_region = "mining"
 
 [node name="Rock5" parent="Interactables" instance=ExtResource("4_rock_resource_node")]
 position = Vector2(2100, 1000)
+world_region = "mining"
 
 [node name="OreRock1" parent="Interactables" instance=ExtResource("18_ore_rock_resource_node")]
 position = Vector2(2000, 1100)
 respawns = false
+world_region = "mining"
 
 [node name="OreRock2" parent="Interactables" instance=ExtResource("18_ore_rock_resource_node")]
 position = Vector2(2300, 1150)
 respawns = false
+world_region = "mining"
 
 [node name="CoalDeposit1" parent="Interactables" instance=ExtResource("19_coal_deposit_resource_node")]
 position = Vector2(2150, 1300)
 respawns = false
+world_region = "mining"
 
 [node name="CoalDeposit2" parent="Interactables" instance=ExtResource("19_coal_deposit_resource_node")]
 position = Vector2(2500, 1000)
 respawns = false
+world_region = "mining"
 
 [node name="ClayDeposit1" parent="Interactables" instance=ExtResource("24_clay_deposit_resource_node")]
 position = Vector2(1800, 1300)
 respawns = false
+world_region = "mining"
 
 [node name="ClayDeposit2" parent="Interactables" instance=ExtResource("24_clay_deposit_resource_node")]
 position = Vector2(2400, 1350)
 respawns = false
+world_region = "mining"
 
 [node name="SmallStones1" parent="Interactables" instance=ExtResource("23_small_stones_resource_node")]
 position = Vector2(1700, 1200)
+world_region = "mining"
 
 [node name="SmallStones2" parent="Interactables" instance=ExtResource("23_small_stones_resource_node")]
 position = Vector2(2600, 1200)
+world_region = "mining"
 
 [node name="SmallStones3" parent="Interactables" instance=ExtResource("23_small_stones_resource_node")]
 position = Vector2(2000, 1900)
+world_region = "mining"
 
 [node name="SmallStones4" parent="Interactables" instance=ExtResource("23_small_stones_resource_node")]
 position = Vector2(1200, 1850)
@@ -417,3 +451,4 @@ position = Vector2(460, 760)
 
 [node name="WoodenCrate1" parent="Interactables" instance=ExtResource("33_wooden_crate")]
 position = Vector2(2250, 550)
+world_region = "forest"
