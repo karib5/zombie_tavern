@@ -44,11 +44,14 @@ func interact(player: Node) -> void:
 		State.GROWING:
 			pass  # nothing to do yet; the prompt just says "Growing..."
 
-## Reuses the same PlayerTools/ToolData check ResourceNode uses, rather
-## than a bespoke "has hoe" lookup local to farming.
+## Reuses the same PlayerTools/ToolData check (and durability use)
+## ResourceNode uses, rather than a bespoke "has hoe" lookup local to
+## farming.
 func _try_till(player: Node) -> void:
 	var tools := player.get_node_or_null("PlayerTools") as PlayerTools
-	if tools == null or not tools.has_tool(ToolData.ToolType.HOE):
+	if tools == null or not tools.has_tool(ToolData.ToolType.HOE) or tools.is_equipped_tool_broken():
+		return
+	if not tools.use_equipped_tool():
 		return
 	state = State.EMPTY
 	_update_state_visuals()

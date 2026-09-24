@@ -9,3 +9,4 @@ display_name = "Clay"
 description = "Soft mud clay scraped from a wet deposit."
 category = 0
 max_stack_size = 30
+weight = 2.0

@@ -9,3 +9,4 @@ display_name = "Iron Ore"
 description = "Raw ore mined from an ore rock. Needs processing before it's useful."
 category = 0
 max_stack_size = 20
+weight = 4.0

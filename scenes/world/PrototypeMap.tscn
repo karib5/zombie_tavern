@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3]
+[gd_scene load_steps=38 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/buildings/Tavern.tscn" id="1_tavern"]
 [ext_resource type="PackedScene" path="res://scenes/items/TestInteractable.tscn" id="2_test_interactable"]
@@ -31,6 +31,9 @@
 [ext_resource type="PackedScene" path="res://scenes/processing/Workbench.tscn" id="29_workbench"]
 [ext_resource type="PackedScene" path="res://scenes/processing/Furnace.tscn" id="30_furnace"]
 [ext_resource type="PackedScene" path="res://scenes/gathering/FishingSpot.tscn" id="31_fishing_spot"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/PondWaterSource.tscn" id="32_pond_water_source"]
+[ext_resource type="PackedScene" path="res://scenes/loot/WoodenCrate.tscn" id="33_wooden_crate"]
+[ext_resource type="PackedScene" path="res://scenes/loot/WoodenChest.tscn" id="34_wooden_chest"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boundary_h"]
 size = Vector2(2800, 32)
@@ -86,6 +89,9 @@ shape = SubResource("RectangleShape2D_pond")
 
 [node name="PondFishingSpot" parent="Water" instance=ExtResource("31_fishing_spot")]
 position = Vector2(725, 1575)
+
+[node name="PondWaterSource" parent="Water" instance=ExtResource("32_pond_water_source")]
+position = Vector2(725, 1450)
 
 [node name="Boundaries" type="Node2D" parent="."]
 
@@ -293,21 +299,27 @@ position = Vector2(2100, 1000)
 
 [node name="OreRock1" parent="Interactables" instance=ExtResource("18_ore_rock_resource_node")]
 position = Vector2(2000, 1100)
+respawns = false
 
 [node name="OreRock2" parent="Interactables" instance=ExtResource("18_ore_rock_resource_node")]
 position = Vector2(2300, 1150)
+respawns = false
 
 [node name="CoalDeposit1" parent="Interactables" instance=ExtResource("19_coal_deposit_resource_node")]
 position = Vector2(2150, 1300)
+respawns = false
 
 [node name="CoalDeposit2" parent="Interactables" instance=ExtResource("19_coal_deposit_resource_node")]
 position = Vector2(2500, 1000)
+respawns = false
 
 [node name="ClayDeposit1" parent="Interactables" instance=ExtResource("24_clay_deposit_resource_node")]
 position = Vector2(1800, 1300)
+respawns = false
 
 [node name="ClayDeposit2" parent="Interactables" instance=ExtResource("24_clay_deposit_resource_node")]
 position = Vector2(2400, 1350)
+respawns = false
 
 [node name="SmallStones1" parent="Interactables" instance=ExtResource("23_small_stones_resource_node")]
 position = Vector2(1700, 1200)
@@ -399,3 +411,9 @@ position = Vector2(450, 480)
 
 [node name="TavernTable2" parent="Interactables" instance=ExtResource("11_tavern_table")]
 position = Vector2(450, 620)
+
+[node name="WoodenChest1" parent="Interactables" instance=ExtResource("34_wooden_chest")]
+position = Vector2(460, 760)
+
+[node name="WoodenCrate1" parent="Interactables" instance=ExtResource("33_wooden_crate")]
+position = Vector2(2250, 550)

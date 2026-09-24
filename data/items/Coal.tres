@@ -9,3 +9,4 @@ display_name = "Coal"
 description = "A lump of coal, mined from a coal deposit."
 category = 0
 max_stack_size = 20
+weight = 2.0

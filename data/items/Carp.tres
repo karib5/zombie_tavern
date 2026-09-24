@@ -9,3 +9,7 @@ display_name = "Carp"
 description = "A decent-sized carp caught from the pond."
 category = 0
 max_stack_size = 20
+is_consumable = true
+hunger_restore = 20.0
+weight = 1.0
+spoil_minutes = 600.0

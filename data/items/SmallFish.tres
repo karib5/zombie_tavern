@@ -9,3 +9,7 @@ display_name = "Small Fish"
 description = "A small fish caught from the pond."
 category = 0
 max_stack_size = 20
+is_consumable = true
+hunger_restore = 10.0
+weight = 0.5
+spoil_minutes = 600.0

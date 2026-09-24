@@ -9,3 +9,4 @@ display_name = "Stone"
 description = "A chunk of stone gathered from rocky outcrops."
 category = 0
 max_stack_size = 30
+weight = 3.0

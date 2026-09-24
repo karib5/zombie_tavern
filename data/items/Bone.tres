@@ -9,3 +9,4 @@ display_name = "Bone"
 description = "A bone left over from a carcass."
 category = 0
 max_stack_size = 20
+weight = 0.8

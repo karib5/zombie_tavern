@@ -9,3 +9,4 @@ display_name = "Berry Seed"
 description = "A seed that can be planted in a farm plot to grow berries."
 category = 0
 max_stack_size = 20
+weight = 0.05

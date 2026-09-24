@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/cooking/CookingStation.gd" id="1_cooking_station_script"]
 [ext_resource type="Resource" path="res://data/recipes/CookedRabbit.tres" id="2_cooked_rabbit_recipe"]
 [ext_resource type="Resource" path="res://data/recipes/ZombieMeatStew.tres" id="3_zombie_stew_recipe"]
 [ext_resource type="Resource" path="res://data/recipes/CookedCarrot.tres" id="4_cooked_carrot_recipe"]
+[ext_resource type="Resource" path="res://data/recipes/CleanWater.tres" id="5_clean_water_recipe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cooking_station"]
 size = Vector2(40, 30)
@@ -13,7 +14,7 @@ collision_layer = 32
 collision_mask = 0
 monitoring = false
 script = ExtResource("1_cooking_station_script")
-recipes = Array[Resource]([ExtResource("2_cooked_rabbit_recipe"), ExtResource("3_zombie_stew_recipe"), ExtResource("4_cooked_carrot_recipe")])
+recipes = Array[Resource]([ExtResource("2_cooked_rabbit_recipe"), ExtResource("3_zombie_stew_recipe"), ExtResource("4_cooked_carrot_recipe"), ExtResource("5_clean_water_recipe")])
 
 [node name="Visual" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(-20, -15, 20, -15, 20, 15, -20, 15)

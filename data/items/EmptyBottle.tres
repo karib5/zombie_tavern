@@ -4,9 +4,9 @@
 
 [resource]
 script = ExtResource("1_item_data_script")
-item_id = "fiber"
-display_name = "Fiber"
-description = "Plant fiber, useful for crafting rope and basic materials."
+item_id = "empty_bottle"
+display_name = "Empty Bottle"
+description = "An empty bottle. Use it at a water source to collect water."
 category = 0
-max_stack_size = 30
-weight = 0.3
+max_stack_size = 10
+weight = 0.2

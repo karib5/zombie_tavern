@@ -4,9 +4,10 @@
 
 [resource]
 script = ExtResource("1_item_data_script")
-item_id = "fiber"
-display_name = "Fiber"
-description = "Plant fiber, useful for crafting rope and basic materials."
-category = 0
-max_stack_size = 30
-weight = 0.3
+item_id = "dirty_water"
+display_name = "Dirty Water"
+description = "Water collected from the pond. Not safe to drink - boil it at a Cooking Station first."
+category = 1
+max_stack_size = 10
+is_consumable = false
+weight = 1.0

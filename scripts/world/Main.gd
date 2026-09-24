@@ -9,7 +9,10 @@ const PLAYER_SCENE: PackedScene = preload("res://scenes/player/Player.tscn")
 @onready var cooking_ui: CookingUI = $UILayer/CookingUI
 @onready var crafting_ui: CraftingUI = $UILayer/CraftingUI
 @onready var processing_ui: ProcessingUI = $UILayer/ProcessingUI
+@onready var search_ui: SearchUI = $UILayer/SearchUI
+@onready var storage_ui: StorageUI = $UILayer/StorageUI
 @onready var tool_ui: ToolUI = $UILayer/ToolUI
+@onready var survival_hud: SurvivalHUD = $UILayer/SurvivalHUD
 @onready var attack_event_ui: AttackEventUI = $UILayer/AttackEventUI
 
 func _ready() -> void:
@@ -28,6 +31,10 @@ func _spawn_player() -> void:
 	var inventory := player.get_node("Inventory") as Inventory
 	inventory_ui.set_inventory(inventory)
 
+	var survival := player.get_node("PlayerSurvival") as PlayerSurvival
+	inventory_ui.set_survival(survival)
+	survival_hud.set_survival(survival)
+
 	var health := player.get_node("Health") as Health
 	health_ui.set_health(health)
 
@@ -40,6 +47,14 @@ func _spawn_player() -> void:
 	processing_ui.set_inventory(inventory)
 	for station in get_tree().get_nodes_in_group("processing_stations"):
 		(station as ProcessingStation).opened.connect(processing_ui.open)
+
+	search_ui.set_inventory(inventory)
+	for container in get_tree().get_nodes_in_group("searchable_containers"):
+		(container as SearchableContainer).opened.connect(search_ui.open)
+
+	storage_ui.set_inventory(inventory)
+	for container in get_tree().get_nodes_in_group("storage_containers"):
+		(container as StorageContainer).opened.connect(storage_ui.open)
 
 	var tools := player.get_node("PlayerTools") as PlayerTools
 	tool_ui.set_tools(tools)

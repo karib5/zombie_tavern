@@ -6,6 +6,10 @@ signal inventory_changed
 
 @export var slot_capacity: int = 20
 
+## Foundation only - not yet enforced anywhere (add_item never blocks on
+## it). See get_total_weight()/is_overweight().
+@export var max_carry_weight: float = 100.0
+
 ## Empty slots are represented as null.
 var slots: Array[InventorySlot] = []
 
@@ -31,7 +35,9 @@ func add_item(item: ItemData, quantity: int = 1) -> int:
 			break
 		if slots[i] == null:
 			var add_amount := mini(item.max_stack_size, remaining)
-			slots[i] = InventorySlot.new(item, add_amount)
+			var slot := InventorySlot.new(item, add_amount)
+			slot.acquired_at_minutes = TimeManager.get_total_minutes()
+			slots[i] = slot
 			remaining -= add_amount
 
 	if remaining < quantity:
@@ -74,3 +80,16 @@ func has_empty_slot() -> bool:
 
 func is_full() -> bool:
 	return not has_empty_slot()
+
+## Computed on demand (not cached/ticked) - cheap enough for a UI refresh
+## or an occasional check, and always correct without every add_item/
+## remove_item call site needing to maintain a running total.
+func get_total_weight() -> float:
+	var total := 0.0
+	for slot in slots:
+		if slot != null:
+			total += slot.item.weight * slot.quantity
+	return total
+
+func is_overweight() -> bool:
+	return get_total_weight() > max_carry_weight

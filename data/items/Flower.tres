@@ -9,3 +9,4 @@ display_name = "Flower"
 description = "A wildflower picked from the grassland."
 category = 0
 max_stack_size = 20
+weight = 0.1

@@ -9,3 +9,4 @@ display_name = "Branch"
 description = "A sturdy fallen branch. Good enough to bind a crude tool handle without needing an axe first."
 category = 0
 max_stack_size = 30
+weight = 1.0

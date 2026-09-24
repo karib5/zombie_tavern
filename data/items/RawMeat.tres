@@ -9,3 +9,7 @@ display_name = "Raw Meat"
 description = "Raw meat from a hunted animal. Should be cooked before eating."
 category = 0
 max_stack_size = 20
+is_consumable = true
+hunger_restore = 15.0
+weight = 1.5
+spoil_minutes = 720.0

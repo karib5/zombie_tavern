@@ -13,3 +13,4 @@ tool_type = 4
 effectiveness = 1.0
 interaction_range = 48.0
 use_cooldown_seconds = 0.3
+weight = 3.0

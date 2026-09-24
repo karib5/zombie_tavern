@@ -9,3 +9,4 @@ display_name = "Wood"
 description = "Sturdy wood gathered from trees. Useful for repairs and building."
 category = 0
 max_stack_size = 30
+weight = 2.0

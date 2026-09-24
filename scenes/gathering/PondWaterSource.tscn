@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/gathering/WaterSource.gd" id="1_water_source_script"]
+[ext_resource type="Resource" path="res://data/items/EmptyBottle.tres" id="2_empty_bottle"]
+[ext_resource type="Resource" path="res://data/items/DirtyWater.tres" id="3_dirty_water"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pond_water_source"]
+size = Vector2(80, 80)
+
+[node name="PondWaterSource" type="Area2D"]
+collision_layer = 32
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_water_source_script")
+water_type = "Pond"
+is_drinkable = false
+is_collectible = true
+container_item = ExtResource("2_empty_bottle")
+output_item = ExtResource("3_dirty_water")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_pond_water_source")

@@ -23,6 +23,13 @@ extends Interactable
 ## for every resource node, so no per-scene tool logic is needed.
 @export var required_tool_type: ToolData.ToolType = ToolData.ToolType.NONE
 
+## True (the default) for natural resources - trees, bushes, wild plants -
+## that regrow after respawn_time_seconds, matching every existing node's
+## current behavior. Set false for finite resources (ore/clay deposits)
+## that should stay depleted once exhausted, same spirit as a
+## SearchableContainer staying empty once looted.
+@export var respawns: bool = true
+
 ## Current remaining amount and depletion state. Changed only through
 ## gathering and respawning below.
 var current_amount: int
@@ -45,14 +52,14 @@ func is_available() -> bool:
 func interact(player: Node) -> void:
 	if is_depleted:
 		return
-	if required_tool_type != ToolData.ToolType.NONE and not _has_required_tool(player):
-		print("Need a %s to gather %s" % [ToolData.ToolType.keys()[required_tool_type], resource_name])
+	if required_tool_type != ToolData.ToolType.NONE and not _has_usable_required_tool(player):
+		print("Need a working %s to gather %s" % [ToolData.ToolType.keys()[required_tool_type], resource_name])
 		return
 	_gather(player)
 
-func _has_required_tool(player: Node) -> bool:
+func _has_usable_required_tool(player: Node) -> bool:
 	var tools := player.get_node_or_null("PlayerTools") as PlayerTools
-	return tools != null and tools.has_tool(required_tool_type)
+	return tools != null and tools.has_tool(required_tool_type) and not tools.is_equipped_tool_broken()
 
 func _gather(player: Node) -> void:
 	if reward_item == null:
@@ -73,6 +80,11 @@ func _gather(player: Node) -> void:
 	current_amount -= amount_gathered
 	print("Gathered %d %s" % [amount_gathered, reward_item.display_name])
 
+	if required_tool_type != ToolData.ToolType.NONE:
+		var tools := player.get_node_or_null("PlayerTools") as PlayerTools
+		if tools != null:
+			tools.use_equipped_tool()
+
 	if current_amount <= 0:
 		_deplete()
 
@@ -92,7 +104,8 @@ func _deplete() -> void:
 	is_depleted = true
 	_collision_shape.disabled = true
 	_update_visual_state()
-	_respawn_timer.start(respawn_time_seconds)
+	if respawns:
+		_respawn_timer.start(respawn_time_seconds)
 
 func _on_respawn_timer_timeout() -> void:
 	current_amount = max_amount

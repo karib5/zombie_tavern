@@ -19,3 +19,10 @@ enum ToolType { NONE, AXE, PICKAXE, HOE, HAMMER, FISHING_ROD, SHOVEL, BUCKET }
 ## Reserved for future rate-limiting of tool use (e.g. a swing animation
 ## lock). Not yet enforced by any system.
 @export var use_cooldown_seconds: float = 0.3
+
+## 0 or less means this tool doesn't use the durability system at all
+## (always usable). Current durability is tracked per-inventory-slot (see
+## InventorySlot.tool_durability), not here, since this Resource is
+## shared by every copy of the item - see PlayerTools for how it's used.
+@export var max_durability: float = 100.0
+@export var durability_loss_per_use: float = 1.0
