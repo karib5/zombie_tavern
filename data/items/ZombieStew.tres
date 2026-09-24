@@ -9,3 +9,4 @@ display_name = "Zombie Stew"
 description = "A hearty (if questionable) stew made from zombie flesh. Surprisingly filling."
 category = 1
 max_stack_size = 10
+hunger_restore = 50.0

@@ -14,3 +14,7 @@ enum ItemCategory {
 @export var category: ItemCategory = ItemCategory.MATERIAL
 @export var icon: Texture2D
 @export var max_stack_size: int = 10
+
+## How much hunger this restores when eaten. Only meaningful for
+## category == FOOD; non-food items leave this at 0.
+@export var hunger_restore: float = 0.0

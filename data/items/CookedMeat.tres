@@ -9,3 +9,4 @@ display_name = "Cooked Meat"
 description = "Meat cooked over a fire. Restores hunger."
 category = 1
 max_stack_size = 10
+hunger_restore = 35.0

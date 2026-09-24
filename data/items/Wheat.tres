@@ -9,3 +9,4 @@ display_name = "Wheat"
 description = "Harvested wheat, useful for future cooking recipes."
 category = 1
 max_stack_size = 20
+hunger_restore = 10.0

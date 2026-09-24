@@ -56,29 +56,54 @@ func _update_state() -> void:
 	if state == State.DEAD:
 		return
 
-	var player: Node2D = GameManager.player
-	if player == null:
+	var target := _find_nearest_target()
+	if target == null:
 		state = State.IDLE
 		_target = null
 		return
 
-	var distance := global_position.distance_to(player.global_position)
+	var distance := global_position.distance_to(target.global_position)
 
 	if distance <= attack_range:
 		state = State.ATTACK
-		_target = player
-		_try_attack(player)
+		_target = target
+		_try_attack(target)
 	elif distance <= detection_range:
 		state = State.CHASE
-		_target = player
+		_target = target
 	else:
 		state = State.IDLE
 		_target = null
 
-func _try_attack(player: Node2D) -> void:
+## Nearest valid target within detection_range - the player or a living
+## survivor. Both are plain Node2D bodies with a sibling "Hurtbox", so
+## _try_attack() below needs no per-target-type branching.
+func _find_nearest_target() -> Node2D:
+	var nearest: Node2D = null
+	var nearest_distance := detection_range
+
+	var player: Node2D = GameManager.player
+	if player != null:
+		var player_distance := global_position.distance_to(player.global_position)
+		if player_distance <= nearest_distance:
+			nearest = player
+			nearest_distance = player_distance
+
+	for survivor in WorldManager.active_survivors:
+		if not is_instance_valid(survivor):
+			continue
+		var survivor_node := survivor as Node2D
+		var survivor_distance := global_position.distance_to(survivor_node.global_position)
+		if survivor_distance <= nearest_distance:
+			nearest = survivor_node
+			nearest_distance = survivor_distance
+
+	return nearest
+
+func _try_attack(target: Node2D) -> void:
 	if not _can_attack:
 		return
-	var hurtbox := player.get_node_or_null("Hurtbox") as Hurtbox
+	var hurtbox := target.get_node_or_null("Hurtbox") as Hurtbox
 	if hurtbox == null:
 		return
 	hurtbox.take_hit(attack_damage)

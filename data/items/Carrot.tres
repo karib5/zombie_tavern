@@ -9,3 +9,4 @@ display_name = "Carrot"
 description = "A carrot gathered from the wild. Can be eaten raw or cooked."
 category = 1
 max_stack_size = 10
+hunger_restore = 15.0
