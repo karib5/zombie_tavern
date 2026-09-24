@@ -1,9 +1,16 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/ai/AnimalAI.gd" id="1_animal_ai_script"]
 [ext_resource type="Script" path="res://scripts/combat/Health.gd" id="2_health_script"]
 [ext_resource type="Script" path="res://scripts/combat/Hurtbox.gd" id="3_hurtbox_script"]
 [ext_resource type="Resource" path="res://data/items/RawRabbitMeat.tres" id="4_raw_rabbit_meat_item"]
+[ext_resource type="Script" path="res://resources/definitions/LootEntry.gd" id="5_loot_entry_script"]
+[ext_resource type="Resource" path="res://data/items/Bone.tres" id="6_bone_item"]
+
+[sub_resource type="Resource" id="LootEntry_bone"]
+script = ExtResource("5_loot_entry_script")
+item = ExtResource("6_bone_item")
+quantity = 1
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rabbit_body"]
 radius = 10.0
@@ -24,6 +31,7 @@ flee_distance = 220.0
 wander_radius = 80.0
 meat_item = ExtResource("4_raw_rabbit_meat_item")
 meat_quantity = 2
+bonus_loot = Array[Resource]([SubResource("LootEntry_bone")])
 
 [node name="Visual" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(10, 0, 7, 7, 0, 10, -7, 7, -10, 0, -7, -7, 0, -10, 7, -7)

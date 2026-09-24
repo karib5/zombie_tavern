@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/gathering/ResourceNode.gd" id="1_resource_node_script"]
+[ext_resource type="Resource" path="res://data/items/Berry.tres" id="2_berry_item"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_berry_bush"]
+size = Vector2(26, 26)
+
+[node name="BerryBushResourceNode" type="Area2D"]
+collision_layer = 32
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_resource_node_script")
+resource_name = "Berries"
+reward_item = ExtResource("2_berry_item")
+max_amount = 6
+amount_per_gather = 2
+respawn_time_seconds = 14.0
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Bush" type="Polygon2D" parent="Visual"]
+polygon = PackedVector2Array(0, -13, 12, -7, 13, 6, 0, 13, -13, 6, -12, -7)
+color = Color(0.16, 0.4, 0.16, 1)
+
+[node name="Berries" type="Polygon2D" parent="Visual"]
+polygon = PackedVector2Array(-4, -2, 0, -4, 4, -2, 4, 3, 0, 5, -4, 3)
+color = Color(0.62, 0.08, 0.18, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_berry_bush")
+
+[node name="RespawnTimer" type="Timer" parent="."]

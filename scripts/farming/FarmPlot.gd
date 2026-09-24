@@ -1,12 +1,17 @@
 class_name FarmPlot
 extends Interactable
 
-enum State { EMPTY, GROWING, MATURE }
+enum State { UNTILLED, EMPTY, GROWING, MATURE }
 
 ## Crop types this plot accepts a seed for. A future plot (or a future
 ## crop type) just needs a new CropData .tres added here - no script
 ## changes required.
 @export var available_crops: Array[CropData] = []
+
+## When true, the plot starts as untilled ground and needs a Hoe
+## interaction before it can be planted. Defaults to false so existing
+## ready-to-plant plots are unaffected.
+@export var requires_hoe_to_prepare: bool = false
 
 const LOOT_PICKUP_SCENE: PackedScene = preload("res://scenes/loot/LootPickup.tscn")
 
@@ -25,16 +30,28 @@ func _ready() -> void:
 	_stage1_timer.timeout.connect(_on_stage1_timeout)
 	_stage2_timer.timeout.connect(_on_stage2_timeout)
 	_mature_timer.timeout.connect(_on_mature_timeout)
+	state = State.UNTILLED if requires_hoe_to_prepare else State.EMPTY
 	_update_state_visuals()
 
 func interact(player: Node) -> void:
 	match state:
+		State.UNTILLED:
+			_try_till(player)
 		State.EMPTY:
 			_try_plant(player)
 		State.MATURE:
 			_try_harvest(player)
 		State.GROWING:
 			pass  # nothing to do yet; the prompt just says "Growing..."
+
+## Reuses the same PlayerTools/ToolData check ResourceNode uses, rather
+## than a bespoke "has hoe" lookup local to farming.
+func _try_till(player: Node) -> void:
+	var tools := player.get_node_or_null("PlayerTools") as PlayerTools
+	if tools == null or not tools.has_tool(ToolData.ToolType.HOE):
+		return
+	state = State.EMPTY
+	_update_state_visuals()
 
 func _try_plant(player: Node) -> void:
 	var inventory := player.get_node("Inventory") as Inventory
@@ -80,6 +97,8 @@ func _try_harvest(player: Node) -> void:
 
 	_reset_to_empty()
 
+## Tilled soil stays tilled after a harvest - only the very first planting
+## needs the Hoe.
 func _reset_to_empty() -> void:
 	state = State.EMPTY
 	planted_crop = null
@@ -104,6 +123,9 @@ func _on_mature_timeout() -> void:
 
 func _update_state_visuals() -> void:
 	match state:
+		State.UNTILLED:
+			_crop_visual.visible = false
+			prompt_text = "Till Soil (Hoe)"
 		State.EMPTY:
 			_crop_visual.visible = false
 			prompt_text = _empty_prompt_text()

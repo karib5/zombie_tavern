@@ -3,32 +3,32 @@
 [ext_resource type="Script" path="res://scripts/gathering/ResourceNode.gd" id="1_resource_node_script"]
 [ext_resource type="Resource" path="res://data/items/Wood.tres" id="2_wood_item"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_tree"]
-size = Vector2(36, 36)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_stump"]
+size = Vector2(22, 18)
 
-[node name="TreeResourceNode" type="Area2D"]
+[node name="TreeStumpResourceNode" type="Area2D"]
 collision_layer = 32
 collision_mask = 0
 monitoring = false
 script = ExtResource("1_resource_node_script")
 resource_name = "Wood"
 reward_item = ExtResource("2_wood_item")
-max_amount = 10
-amount_per_gather = 2
-respawn_time_seconds = 10.0
+max_amount = 3
+amount_per_gather = 1
+respawn_time_seconds = 20.0
 required_tool_type = 1
 
 [node name="Visual" type="Node2D" parent="."]
 
-[node name="Trunk" type="Polygon2D" parent="Visual"]
-polygon = PackedVector2Array(-5, 4, 5, 4, 5, 20, -5, 20)
-color = Color(0.4, 0.26, 0.13, 1)
+[node name="Stump" type="Polygon2D" parent="Visual"]
+polygon = PackedVector2Array(-10, 8, 10, 8, 9, -6, -9, -6)
+color = Color(0.34, 0.22, 0.12, 1)
 
-[node name="Canopy" type="Polygon2D" parent="Visual"]
-polygon = PackedVector2Array(24, 0, 12, 21, -12, 21, -24, 0, -12, -21, 12, -21)
-color = Color(0.13, 0.4, 0.18, 1)
+[node name="Rings" type="Polygon2D" parent="Visual"]
+polygon = PackedVector2Array(-5, -6, 5, -6, 5, -2, -5, -2)
+color = Color(0.5, 0.36, 0.2, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_tree")
+shape = SubResource("RectangleShape2D_stump")
 
 [node name="RespawnTimer" type="Timer" parent="."]

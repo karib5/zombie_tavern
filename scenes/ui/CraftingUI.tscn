@@ -1,0 +1,36 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/CraftingUI.gd" id="1_crafting_ui_script"]
+[ext_resource type="Resource" path="res://data/recipes/Axe.tres" id="2_axe_recipe"]
+[ext_resource type="Resource" path="res://data/recipes/Pickaxe.tres" id="3_pickaxe_recipe"]
+[ext_resource type="Resource" path="res://data/recipes/Hoe.tres" id="4_hoe_recipe"]
+[ext_resource type="Resource" path="res://data/recipes/Plank.tres" id="5_plank_recipe"]
+[ext_resource type="Resource" path="res://data/recipes/StoneBlock.tres" id="6_stone_block_recipe"]
+[ext_resource type="Resource" path="res://data/recipes/Rope.tres" id="7_rope_recipe"]
+[ext_resource type="Resource" path="res://data/recipes/IronBar.tres" id="8_iron_bar_recipe"]
+[ext_resource type="Resource" path="res://data/recipes/Hammer.tres" id="9_hammer_recipe"]
+
+[node name="CraftingUI" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_crafting_ui_script")
+recipes = Array[Resource]([ExtResource("2_axe_recipe"), ExtResource("3_pickaxe_recipe"), ExtResource("4_hoe_recipe"), ExtResource("9_hammer_recipe"), ExtResource("5_plank_recipe"), ExtResource("6_stone_block_recipe"), ExtResource("7_rope_recipe"), ExtResource("8_iron_bar_recipe")])
+
+[node name="Panel" type="Panel" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -220.0
+offset_right = 200.0
+offset_bottom = 220.0
+
+[node name="RecipeList" type="VBoxContainer" parent="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0

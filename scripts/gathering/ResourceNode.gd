@@ -18,6 +18,11 @@ extends Interactable
 ## Seconds the node stays depleted before it respawns.
 @export var respawn_time_seconds: float = 10.0
 
+## NONE means gatherable by hand. Anything else requires the player to
+## have that tool type equipped (see PlayerTools) - the same check runs
+## for every resource node, so no per-scene tool logic is needed.
+@export var required_tool_type: ToolData.ToolType = ToolData.ToolType.NONE
+
 ## Current remaining amount and depletion state. Changed only through
 ## gathering and respawning below.
 var current_amount: int
@@ -40,7 +45,14 @@ func is_available() -> bool:
 func interact(player: Node) -> void:
 	if is_depleted:
 		return
+	if required_tool_type != ToolData.ToolType.NONE and not _has_required_tool(player):
+		print("Need a %s to gather %s" % [ToolData.ToolType.keys()[required_tool_type], resource_name])
+		return
 	_gather(player)
+
+func _has_required_tool(player: Node) -> bool:
+	var tools := player.get_node_or_null("PlayerTools") as PlayerTools
+	return tools != null and tools.has_tool(required_tool_type)
 
 func _gather(player: Node) -> void:
 	if reward_item == null:
@@ -50,7 +62,7 @@ func _gather(player: Node) -> void:
 	if inventory == null:
 		return
 
-	var amount_to_attempt := mini(amount_per_gather, current_amount)
+	var amount_to_attempt := mini(_effective_amount_per_gather(player), current_amount)
 	var leftover := inventory.add_item(reward_item, amount_to_attempt)
 	var amount_gathered := amount_to_attempt - leftover
 
@@ -63,6 +75,17 @@ func _gather(player: Node) -> void:
 
 	if current_amount <= 0:
 		_deplete()
+
+## Bare-hand nodes always yield the base amount; a matching tool scales it
+## by that tool's effectiveness (a blunter tool is still usable, just
+## slower to yield).
+func _effective_amount_per_gather(player: Node) -> int:
+	if required_tool_type == ToolData.ToolType.NONE:
+		return amount_per_gather
+	var tools := player.get_node_or_null("PlayerTools") as PlayerTools
+	if tools == null or tools.equipped_tool == null:
+		return amount_per_gather
+	return maxi(1, roundi(amount_per_gather * tools.equipped_tool.effectiveness))
 
 func _deplete() -> void:
 	current_amount = 0

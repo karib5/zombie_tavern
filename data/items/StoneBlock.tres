@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/ItemData.gd" id="1_item_data_script"]
+
+[resource]
+script = ExtResource("1_item_data_script")
+item_id = "stone_block"
+display_name = "Stone Block"
+description = "Rough stone chipped into a usable block."
+category = 0
+max_stack_size = 30

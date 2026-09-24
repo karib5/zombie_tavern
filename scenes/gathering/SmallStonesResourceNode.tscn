@@ -3,28 +3,31 @@
 [ext_resource type="Script" path="res://scripts/gathering/ResourceNode.gd" id="1_resource_node_script"]
 [ext_resource type="Resource" path="res://data/items/Stone.tres" id="2_stone_item"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rock"]
-size = Vector2(32, 32)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_small_stones"]
+size = Vector2(22, 18)
 
-[node name="RockResourceNode" type="Area2D"]
+[node name="SmallStonesResourceNode" type="Area2D"]
 collision_layer = 32
 collision_mask = 0
 monitoring = false
 script = ExtResource("1_resource_node_script")
 resource_name = "Stone"
 reward_item = ExtResource("2_stone_item")
-max_amount = 12
-amount_per_gather = 3
+max_amount = 4
+amount_per_gather = 1
 respawn_time_seconds = 10.0
-required_tool_type = 2
 
 [node name="Visual" type="Node2D" parent="."]
 
-[node name="RockShape" type="Polygon2D" parent="Visual"]
-polygon = PackedVector2Array(0, -20, 19, -6, 12, 16, -12, 16, -19, -6)
-color = Color(0.55, 0.55, 0.58, 1)
+[node name="StoneA" type="Polygon2D" parent="Visual"]
+polygon = PackedVector2Array(-8, 4, -2, -3, 5, 0, 6, 5, -2, 7)
+color = Color(0.58, 0.58, 0.6, 1)
+
+[node name="StoneB" type="Polygon2D" parent="Visual"]
+polygon = PackedVector2Array(2, -6, 8, -8, 10, -3, 6, 0)
+color = Color(0.5, 0.5, 0.52, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_rock")
+shape = SubResource("RectangleShape2D_small_stones")
 
 [node name="RespawnTimer" type="Timer" parent="."]

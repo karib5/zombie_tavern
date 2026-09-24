@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/gathering/ResourceNode.gd" id="1_resource_node_script"]
+[ext_resource type="Resource" path="res://data/items/Flower.tres" id="2_flower_item"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_flower"]
+size = Vector2(16, 16)
+
+[node name="FlowerResourceNode" type="Area2D"]
+collision_layer = 32
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_resource_node_script")
+resource_name = "Flower"
+reward_item = ExtResource("2_flower_item")
+max_amount = 3
+amount_per_gather = 1
+respawn_time_seconds = 12.0
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Stem" type="Polygon2D" parent="Visual"]
+polygon = PackedVector2Array(-1, 2, 1, 2, 1, 8, -1, 8)
+color = Color(0.2, 0.5, 0.2, 1)
+
+[node name="Petals" type="Polygon2D" parent="Visual"]
+polygon = PackedVector2Array(0, -8, 5, -3, 3, 4, -3, 4, -5, -3)
+color = Color(0.9, 0.75, 0.2, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_flower")
+
+[node name="RespawnTimer" type="Timer" parent="."]

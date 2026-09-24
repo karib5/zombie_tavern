@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/world/PrototypeMap.tscn" id="1_map"]
 [ext_resource type="Script" path="res://scripts/world/Main.gd" id="2_main_script"]
@@ -7,6 +7,9 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/HealthUI.tscn" id="5_health_ui"]
 [ext_resource type="PackedScene" path="res://scenes/ui/CookingUI.tscn" id="6_cooking_ui"]
 [ext_resource type="PackedScene" path="res://scenes/ui/AttackEventUI.tscn" id="7_attack_event_ui"]
+[ext_resource type="PackedScene" path="res://scenes/ui/CraftingUI.tscn" id="8_crafting_ui"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ToolUI.tscn" id="9_tool_ui"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ProcessingUI.tscn" id="10_processing_ui"]
 
 [node name="Main" type="Node"]
 script = ExtResource("2_main_script")
@@ -26,5 +29,11 @@ script = ExtResource("2_main_script")
 [node name="HealthUI" parent="UILayer" instance=ExtResource("5_health_ui")]
 
 [node name="CookingUI" parent="UILayer" instance=ExtResource("6_cooking_ui")]
+
+[node name="CraftingUI" parent="UILayer" instance=ExtResource("8_crafting_ui")]
+
+[node name="ProcessingUI" parent="UILayer" instance=ExtResource("10_processing_ui")]
+
+[node name="ToolUI" parent="UILayer" instance=ExtResource("9_tool_ui")]
 
 [node name="AttackEventUI" parent="UILayer" instance=ExtResource("7_attack_event_ui")]

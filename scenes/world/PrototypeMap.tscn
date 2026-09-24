@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=35 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/buildings/Tavern.tscn" id="1_tavern"]
 [ext_resource type="PackedScene" path="res://scenes/items/TestInteractable.tscn" id="2_test_interactable"]
@@ -15,23 +15,82 @@
 [ext_resource type="Resource" path="res://data/survivors/Civilian.tres" id="13_civilian_data"]
 [ext_resource type="Script" path="res://scripts/events/TavernAttackEvent.gd" id="14_tavern_attack_event_script"]
 [ext_resource type="PackedScene" path="res://scenes/events/AttackEventTrigger.tscn" id="15_attack_event_trigger"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/SmallTreeResourceNode.tscn" id="16_small_tree_resource_node"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/TreeStumpResourceNode.tscn" id="17_tree_stump_resource_node"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/OreRockResourceNode.tscn" id="18_ore_rock_resource_node"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/CoalDepositResourceNode.tscn" id="19_coal_deposit_resource_node"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/BerryBushResourceNode.tscn" id="20_berry_bush_resource_node"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/BranchPileResourceNode.tscn" id="21_branch_pile_resource_node"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/FallenLogResourceNode.tscn" id="22_fallen_log_resource_node"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/SmallStonesResourceNode.tscn" id="23_small_stones_resource_node"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/ClayDepositResourceNode.tscn" id="24_clay_deposit_resource_node"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/FlowerResourceNode.tscn" id="25_flower_resource_node"]
+[ext_resource type="Resource" path="res://data/items/BerrySeed.tres" id="26_berry_seed"]
+[ext_resource type="Resource" path="res://data/crops/BerryCrop.tres" id="27_berry_crop"]
+[ext_resource type="Resource" path="res://data/crops/CarrotCrop.tres" id="28_carrot_crop"]
+[ext_resource type="PackedScene" path="res://scenes/processing/Workbench.tscn" id="29_workbench"]
+[ext_resource type="PackedScene" path="res://scenes/processing/Furnace.tscn" id="30_furnace"]
+[ext_resource type="PackedScene" path="res://scenes/gathering/FishingSpot.tscn" id="31_fishing_spot"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boundary_h"]
-size = Vector2(1600, 32)
+size = Vector2(2800, 32)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boundary_v"]
-size = Vector2(32, 1200)
+size = Vector2(32, 2000)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pond"]
+size = Vector2(450, 350)
 
 [node name="PrototypeMap" type="Node2D"]
 
 [node name="Ground" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(0, 0, 1600, 0, 1600, 1200, 0, 1200)
+polygon = PackedVector2Array(0, 0, 2800, 0, 2800, 2000, 0, 2000)
 color = Color(0.29, 0.42, 0.24, 1)
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="ForestZone" type="Polygon2D" parent="Zones"]
+polygon = PackedVector2Array(1650, 50, 2750, 50, 2750, 750, 1650, 750)
+color = Color(0.18, 0.32, 0.19, 1)
+
+[node name="ResourceZone" type="Polygon2D" parent="Zones"]
+polygon = PackedVector2Array(1650, 800, 2750, 800, 2750, 1450, 1650, 1450)
+color = Color(0.36, 0.34, 0.3, 1)
+
+[node name="FarmZone" type="Polygon2D" parent="Zones"]
+polygon = PackedVector2Array(1030, 1490, 1600, 1490, 1600, 1930, 1030, 1930)
+color = Color(0.36, 0.3, 0.2, 1)
+
+[node name="PathToFarm" type="Polygon2D" parent="Zones"]
+polygon = PackedVector2Array(260, 750, 360, 750, 360, 1450, 260, 1450)
+color = Color(0.42, 0.38, 0.28, 1)
+
+[node name="PathToResources" type="Polygon2D" parent="Zones"]
+polygon = PackedVector2Array(360, 1350, 1650, 1350, 1650, 1450, 360, 1450)
+color = Color(0.42, 0.38, 0.28, 1)
+
+[node name="Water" type="Node2D" parent="."]
+
+[node name="Pond" type="Polygon2D" parent="Water"]
+position = Vector2(725, 1575)
+polygon = PackedVector2Array(-225, -175, 225, -175, 225, 175, -225, 175)
+color = Color(0.22, 0.4, 0.58, 1)
+
+[node name="PondBody" type="StaticBody2D" parent="Water"]
+position = Vector2(725, 1575)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Water/PondBody"]
+shape = SubResource("RectangleShape2D_pond")
+
+[node name="PondFishingSpot" parent="Water" instance=ExtResource("31_fishing_spot")]
+position = Vector2(725, 1575)
 
 [node name="Boundaries" type="Node2D" parent="."]
 
 [node name="NorthBoundary" type="StaticBody2D" parent="Boundaries"]
-position = Vector2(800, -16)
+position = Vector2(1400, -16)
 collision_layer = 1
 collision_mask = 0
 
@@ -39,7 +98,7 @@ collision_mask = 0
 shape = SubResource("RectangleShape2D_boundary_h")
 
 [node name="SouthBoundary" type="StaticBody2D" parent="Boundaries"]
-position = Vector2(800, 1216)
+position = Vector2(1400, 2016)
 collision_layer = 1
 collision_mask = 0
 
@@ -47,7 +106,7 @@ collision_mask = 0
 shape = SubResource("RectangleShape2D_boundary_h")
 
 [node name="WestBoundary" type="StaticBody2D" parent="Boundaries"]
-position = Vector2(-16, 600)
+position = Vector2(-16, 1000)
 collision_layer = 1
 collision_mask = 0
 
@@ -55,7 +114,7 @@ collision_mask = 0
 shape = SubResource("RectangleShape2D_boundary_v")
 
 [node name="EastBoundary" type="StaticBody2D" parent="Boundaries"]
-position = Vector2(1616, 600)
+position = Vector2(2816, 1000)
 collision_layer = 1
 collision_mask = 0
 
@@ -76,6 +135,15 @@ position = Vector2(340, 700)
 [node name="Zombie3" parent="Entities" instance=ExtResource("6_zombie")]
 position = Vector2(1400, 600)
 
+[node name="Zombie4" parent="Entities" instance=ExtResource("6_zombie")]
+position = Vector2(2150, 450)
+
+[node name="Zombie5" parent="Entities" instance=ExtResource("6_zombie")]
+position = Vector2(2600, 150)
+
+[node name="Zombie6" parent="Entities" instance=ExtResource("6_zombie")]
+position = Vector2(2450, 850)
+
 [node name="Rabbit1" parent="Entities" instance=ExtResource("7_rabbit")]
 position = Vector2(700, 100)
 
@@ -90,6 +158,12 @@ position = Vector2(1050, 1100)
 
 [node name="Rabbit5" parent="Entities" instance=ExtResource("7_rabbit")]
 position = Vector2(750, 600)
+
+[node name="Rabbit6" parent="Entities" instance=ExtResource("7_rabbit")]
+position = Vector2(2200, 1600)
+
+[node name="Rabbit7" parent="Entities" instance=ExtResource("7_rabbit")]
+position = Vector2(2600, 1750)
 
 [node name="Survivor1" parent="Entities" instance=ExtResource("12_survivor")]
 position = Vector2(190, 630)
@@ -136,11 +210,116 @@ position = Vector2(900, 300)
 [node name="Tree2" parent="Interactables" instance=ExtResource("3_tree_resource_node")]
 position = Vector2(980, 340)
 
+[node name="Tree3" parent="Interactables" instance=ExtResource("3_tree_resource_node")]
+position = Vector2(1700, 150)
+
+[node name="Tree4" parent="Interactables" instance=ExtResource("3_tree_resource_node")]
+position = Vector2(1780, 180)
+
+[node name="Tree5" parent="Interactables" instance=ExtResource("3_tree_resource_node")]
+position = Vector2(1900, 300)
+
+[node name="Tree6" parent="Interactables" instance=ExtResource("3_tree_resource_node")]
+position = Vector2(2050, 220)
+
+[node name="SmallTree1" parent="Interactables" instance=ExtResource("16_small_tree_resource_node")]
+position = Vector2(1720, 400)
+
+[node name="SmallTree2" parent="Interactables" instance=ExtResource("16_small_tree_resource_node")]
+position = Vector2(1850, 450)
+
+[node name="SmallTree3" parent="Interactables" instance=ExtResource("16_small_tree_resource_node")]
+position = Vector2(2000, 500)
+
+[node name="TreeStump1" parent="Interactables" instance=ExtResource("17_tree_stump_resource_node")]
+position = Vector2(1950, 150)
+
+[node name="TreeStump2" parent="Interactables" instance=ExtResource("17_tree_stump_resource_node")]
+position = Vector2(2200, 300)
+
+[node name="FallenLog1" parent="Interactables" instance=ExtResource("22_fallen_log_resource_node")]
+position = Vector2(1700, 600)
+
+[node name="FallenLog2" parent="Interactables" instance=ExtResource("22_fallen_log_resource_node")]
+position = Vector2(2100, 650)
+
+[node name="BranchPile1" parent="Interactables" instance=ExtResource("21_branch_pile_resource_node")]
+position = Vector2(1800, 550)
+
+[node name="BranchPile2" parent="Interactables" instance=ExtResource("21_branch_pile_resource_node")]
+position = Vector2(2300, 200)
+
+[node name="BranchPile3" parent="Interactables" instance=ExtResource("21_branch_pile_resource_node")]
+position = Vector2(2450, 500)
+
+[node name="BerryBush1" parent="Interactables" instance=ExtResource("20_berry_bush_resource_node")]
+position = Vector2(2350, 350)
+
+[node name="BerryBush2" parent="Interactables" instance=ExtResource("20_berry_bush_resource_node")]
+position = Vector2(2550, 200)
+
+[node name="BerryBush3" parent="Interactables" instance=ExtResource("20_berry_bush_resource_node")]
+position = Vector2(2600, 600)
+
+[node name="Flower1" parent="Interactables" instance=ExtResource("25_flower_resource_node")]
+position = Vector2(2000, 650)
+
+[node name="Flower2" parent="Interactables" instance=ExtResource("25_flower_resource_node")]
+position = Vector2(2500, 700)
+
+[node name="Flower3" parent="Interactables" instance=ExtResource("25_flower_resource_node")]
+position = Vector2(2100, 1700)
+
+[node name="Flower4" parent="Interactables" instance=ExtResource("25_flower_resource_node")]
+position = Vector2(2400, 1850)
+
+[node name="Flower5" parent="Interactables" instance=ExtResource("25_flower_resource_node")]
+position = Vector2(1800, 1850)
+
 [node name="Rock1" parent="Interactables" instance=ExtResource("4_rock_resource_node")]
 position = Vector2(1200, 900)
 
 [node name="Rock2" parent="Interactables" instance=ExtResource("4_rock_resource_node")]
 position = Vector2(1260, 930)
+
+[node name="Rock3" parent="Interactables" instance=ExtResource("4_rock_resource_node")]
+position = Vector2(1750, 900)
+
+[node name="Rock4" parent="Interactables" instance=ExtResource("4_rock_resource_node")]
+position = Vector2(1900, 950)
+
+[node name="Rock5" parent="Interactables" instance=ExtResource("4_rock_resource_node")]
+position = Vector2(2100, 1000)
+
+[node name="OreRock1" parent="Interactables" instance=ExtResource("18_ore_rock_resource_node")]
+position = Vector2(2000, 1100)
+
+[node name="OreRock2" parent="Interactables" instance=ExtResource("18_ore_rock_resource_node")]
+position = Vector2(2300, 1150)
+
+[node name="CoalDeposit1" parent="Interactables" instance=ExtResource("19_coal_deposit_resource_node")]
+position = Vector2(2150, 1300)
+
+[node name="CoalDeposit2" parent="Interactables" instance=ExtResource("19_coal_deposit_resource_node")]
+position = Vector2(2500, 1000)
+
+[node name="ClayDeposit1" parent="Interactables" instance=ExtResource("24_clay_deposit_resource_node")]
+position = Vector2(1800, 1300)
+
+[node name="ClayDeposit2" parent="Interactables" instance=ExtResource("24_clay_deposit_resource_node")]
+position = Vector2(2400, 1350)
+
+[node name="SmallStones1" parent="Interactables" instance=ExtResource("23_small_stones_resource_node")]
+position = Vector2(1700, 1200)
+
+[node name="SmallStones2" parent="Interactables" instance=ExtResource("23_small_stones_resource_node")]
+position = Vector2(2600, 1200)
+
+[node name="SmallStones3" parent="Interactables" instance=ExtResource("23_small_stones_resource_node")]
+position = Vector2(2000, 1900)
+
+[node name="SmallStones4" parent="Interactables" instance=ExtResource("23_small_stones_resource_node")]
+position = Vector2(1200, 1850)
 
 [node name="Plant1" parent="Interactables" instance=ExtResource("5_plant_resource_node")]
 position = Vector2(500, 950)
@@ -148,13 +327,32 @@ position = Vector2(500, 950)
 [node name="Plant2" parent="Interactables" instance=ExtResource("5_plant_resource_node")]
 position = Vector2(650, 1000)
 
+[node name="Plant3" parent="Interactables" instance=ExtResource("5_plant_resource_node")]
+position = Vector2(1400, 1700)
+
+[node name="Plant4" parent="Interactables" instance=ExtResource("5_plant_resource_node")]
+position = Vector2(700, 1250)
+
 [node name="CookingStation" parent="Interactables" instance=ExtResource("8_cooking_station")]
 position = Vector2(200, 500)
+
+[node name="Workbench" parent="Interactables" instance=ExtResource("29_workbench")]
+position = Vector2(290, 760)
+
+[node name="Furnace" parent="Interactables" instance=ExtResource("30_furnace")]
+position = Vector2(390, 760)
 
 [node name="WildCarrotPatch" parent="Interactables" instance=ExtResource("5_plant_resource_node")]
 position = Vector2(850, 590)
 resource_name = "Carrot Seeds"
 reward_item = ExtResource("10_carrot_seed")
+max_amount = 8
+amount_per_gather = 2
+
+[node name="WildBerrySeedPatch" parent="Interactables" instance=ExtResource("5_plant_resource_node")]
+position = Vector2(1300, 1750)
+resource_name = "Berry Seeds"
+reward_item = ExtResource("26_berry_seed")
 max_amount = 8
 amount_per_gather = 2
 
@@ -175,6 +373,26 @@ position = Vector2(1030, 630)
 
 [node name="FarmPlot6" parent="Interactables" instance=ExtResource("9_farm_plot")]
 position = Vector2(1110, 630)
+
+[node name="FarmPlot7" parent="Interactables" instance=ExtResource("9_farm_plot")]
+position = Vector2(1100, 1550)
+available_crops = Array[Resource]([ExtResource("28_carrot_crop"), ExtResource("27_berry_crop")])
+requires_hoe_to_prepare = true
+
+[node name="FarmPlot8" parent="Interactables" instance=ExtResource("9_farm_plot")]
+position = Vector2(1180, 1550)
+available_crops = Array[Resource]([ExtResource("27_berry_crop")])
+requires_hoe_to_prepare = true
+
+[node name="FarmPlot9" parent="Interactables" instance=ExtResource("9_farm_plot")]
+position = Vector2(1100, 1630)
+available_crops = Array[Resource]([ExtResource("27_berry_crop")])
+requires_hoe_to_prepare = true
+
+[node name="FarmPlot10" parent="Interactables" instance=ExtResource("9_farm_plot")]
+position = Vector2(1180, 1630)
+available_crops = Array[Resource]([ExtResource("27_berry_crop")])
+requires_hoe_to_prepare = true
 
 [node name="TavernTable1" parent="Interactables" instance=ExtResource("11_tavern_table")]
 position = Vector2(450, 480)

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/definitions/RecipeData.gd" id="1_recipe_data_script"]
+[ext_resource type="Script" path="res://resources/definitions/LootEntry.gd" id="2_loot_entry_script"]
+[ext_resource type="Resource" path="res://data/items/Stone.tres" id="3_stone"]
+[ext_resource type="Resource" path="res://data/items/StoneBlock.tres" id="4_stone_block"]
+
+[sub_resource type="Resource" id="LootEntry_stone"]
+script = ExtResource("2_loot_entry_script")
+item = ExtResource("3_stone")
+quantity = 3
+
+[resource]
+script = ExtResource("1_recipe_data_script")
+recipe_name = "Stone Block"
+category = 2
+ingredients = Array[Resource]([SubResource("LootEntry_stone")])
+output_item = ExtResource("4_stone_block")
+output_quantity = 1
+cook_time_seconds = 2.0
+requires_station = true
+station_name = "Workbench"

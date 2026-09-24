@@ -7,6 +7,9 @@ const PLAYER_SCENE: PackedScene = preload("res://scenes/player/Player.tscn")
 @onready var inventory_ui: InventoryUI = $UILayer/InventoryUI
 @onready var health_ui: HealthUI = $UILayer/HealthUI
 @onready var cooking_ui: CookingUI = $UILayer/CookingUI
+@onready var crafting_ui: CraftingUI = $UILayer/CraftingUI
+@onready var processing_ui: ProcessingUI = $UILayer/ProcessingUI
+@onready var tool_ui: ToolUI = $UILayer/ToolUI
 @onready var attack_event_ui: AttackEventUI = $UILayer/AttackEventUI
 
 func _ready() -> void:
@@ -31,6 +34,15 @@ func _spawn_player() -> void:
 	cooking_ui.set_inventory(inventory)
 	for station in get_tree().get_nodes_in_group("cooking_stations"):
 		(station as CookingStation).opened.connect(cooking_ui.open)
+
+	crafting_ui.setup(player, inventory)
+
+	processing_ui.set_inventory(inventory)
+	for station in get_tree().get_nodes_in_group("processing_stations"):
+		(station as ProcessingStation).opened.connect(processing_ui.open)
+
+	var tools := player.get_node("PlayerTools") as PlayerTools
+	tool_ui.set_tools(tools)
 
 	var attack_events := get_tree().get_nodes_in_group("tavern_attack_events")
 	if attack_events.size() > 0:
