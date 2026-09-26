@@ -3,13 +3,6 @@ extends Node
 ## Root node of the currently active map's world content.
 var current_map_root: Node2D = null
 
-## The exterior map itself (e.g. PrototypeMap), as opposed to sibling
-## overlay nodes under current_map_root like DayNightVisual - the node
-## BuildingManager hides/freezes while the player is inside a building.
-## Defaults to current_map_root itself if no exterior_map is given, so
-## existing register_current_map(world_root) call sites keep working.
-var current_exterior_map: Node = null
-
 ## Simple registries future systems (horde checks, AI queries) can use.
 var active_zombies: Array[Node] = []
 var active_animals: Array[Node] = []
@@ -17,9 +10,8 @@ var active_survivors: Array[Node] = []
 
 var _spawn_points: Dictionary = {}
 
-func register_current_map(map_root: Node2D, exterior_map: Node = null) -> void:
+func register_current_map(map_root: Node2D) -> void:
 	current_map_root = map_root
-	current_exterior_map = exterior_map if exterior_map else map_root
 	_spawn_points.clear()
 	for node in map_root.find_children("*", "Marker2D", true, false):
 		if node.name.ends_with("SpawnPoint"):

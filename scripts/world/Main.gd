@@ -13,7 +13,6 @@ const REGIONS: Array[WorldRegionData] = [
 ]
 
 @onready var world_root: Node2D = $WorldRoot
-@onready var prototype_map: Node2D = $WorldRoot/PrototypeMap
 @onready var interaction_prompt: InteractionPrompt = $UILayer/InteractionPrompt
 @onready var inventory_ui: InventoryUI = $UILayer/InventoryUI
 @onready var health_ui: HealthUI = $UILayer/HealthUI
@@ -29,7 +28,7 @@ const REGIONS: Array[WorldRegionData] = [
 func _ready() -> void:
 	for region in REGIONS:
 		WorldManager.register_region(region)
-	WorldManager.register_current_map(world_root, prototype_map)
+	WorldManager.register_current_map(world_root)
 	_spawn_player()
 	WorldManager.force_region_check()
 

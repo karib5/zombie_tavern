@@ -13,7 +13,6 @@ GameManager="*res://systems/GameManager.gd"
 WorldManager="*res://systems/WorldManager.gd"
 TimeManager="*res://systems/TimeManager.gd"
 SaveManager="*res://systems/SaveManager.gd"
-BuildingManager="*res://systems/BuildingManager.gd"
 
 [input]
 
