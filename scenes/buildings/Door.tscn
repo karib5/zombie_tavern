@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/interaction/Door.gd" id="1_door_script"]
+[ext_resource type="PackedScene" path="res://scenes/buildings/Tavern.tscn" id="2_tavern_interior"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_door_interact"]
+size = Vector2(48, 32)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_door_proximity"]
+radius = 70.0
+
+[node name="Door" type="Area2D"]
+collision_layer = 32
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_door_script")
+interior_scene = ExtResource("2_tavern_interior")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_door_interact")
+
+[node name="DoorSprite" type="Sprite2D" parent="."]
+centered = false
+
+[node name="ProximityArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitoring = true
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ProximityArea"]
+shape = SubResource("CircleShape2D_door_proximity")
